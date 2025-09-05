@@ -1040,5 +1040,46 @@ ok.onclick = function(){
 })();
 </script>
 
+
+<!-- Use checkmark.png on the completion page (non-destructive) -->
+<style>
+  .completion-check{
+    width:96px; height:96px; display:block; margin:0 auto 16px auto;
+  }
+</style>
+<script>
+(function(){
+  function placeCheckImage(){
+    var page = document.querySelector('.sar-page[data-step="finish"]') || document.querySelector('[data-step="finish"]');
+    if(!page) return;
+    if(page.querySelector('img.completion-check')) return; // already placed
+
+    var img = document.createElement('img');
+    img.src = 'checkmark.png';
+    img.alt = 'Completed';
+    img.className = 'completion-check';
+
+    // Insert at the top of the finish page content
+    if(page.firstElementChild){
+      page.insertBefore(img, page.firstElementChild);
+    } else {
+      page.appendChild(img);
+    }
+
+    // If an existing SVG checkmark is present, hide it to avoid duplicates
+    var oldSvg = page.querySelector('svg');
+    if(oldSvg) oldSvg.style.display = 'none';
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', placeCheckImage, {once:true});
+  } else {
+    placeCheckImage();
+  }
+  // Also handle navigation to the finish step
+  window.addEventListener('hashchange', function(){ setTimeout(placeCheckImage, 0); }, {passive:true});
+})();
+</script>
+
 </body>
 </html>

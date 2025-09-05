@@ -947,6 +947,14 @@ ok.onclick = function(){
                !!(document.getElementById('peerConsent') && document.getElementById('peerConsent').checked);
       var target = send || next;
       if(target) target.disabled = !ok;
+    // Sync button visual style with enabled/disabled state
+    if(target){
+      if(target.disabled){
+        target.classList.remove('sar-btn-active');
+      } else {
+        target.classList.add('sar-btn-active');
+      }
+    }
     }
     nameEl && nameEl.addEventListener('input', validate);
     emailEl && emailEl.addEventListener('input', validate);

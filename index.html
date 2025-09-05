@@ -170,24 +170,34 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-3{ height:3.6em; }
 
 
-/* === FINISH PAGE (simple + robust) === */
-.sar-page[data-step="finish"] > .sar-card{
+/* === FINISH PAGE (dynamic sizing + perfect centering) === */
+.sar-page[data-step="finish"] > .sar-card {
   min-height: calc(100dvh - var(--header-h));
   display: flex;
   flex-direction: column;
-  justify-content: center; /* center content vertically */
-  align-items: center;     /* as fallback if needed */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-.finish-stack-simple{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  gap:18px;
+.finish-stack-dynamic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
-#finishIconSimple{ width: 220px; height: 220px; display:block; }
-#finishTextSimple{ font-size: 28px; font-weight: 700; line-height: 1.1; }
-.sar-page[data-step="finish"] .sar-actions{ margin-top: 28px; }
+.finish-stack-dynamic svg {
+  display: block;
+  height: auto;
+}
+.finish-stack-dynamic .finish-text {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.sar-page[data-step="finish"] .sar-actions {
+  margin-top: 32px;
+}
 
 </style>
 </head>
@@ -338,8 +348,8 @@ p{color:#434343;line-height:1.6;}
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
   <div class="sar-card">
-    <div class="finish-stack-simple">
-      <svg id="finishIconSimple" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <div class="finish-stack-dynamic">
+      <svg id="finishIconDynamic" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
         <path d="M7 13L10 16L17 9"
               stroke="white"
@@ -347,7 +357,7 @@ p{color:#434343;line-height:1.6;}
               stroke-linecap="round"
               stroke-linejoin="round"/>
       </svg>
-      <div id="finishTextSimple">Congratulations</div>
+      <div id="finishTextDynamic" class="finish-text">Congratulations</div>
     </div>
 
     <div class="sar-actions">
@@ -1090,6 +1100,33 @@ ok.onclick = function(){
   }
   // Also handle navigation to the finish step
   window.addEventListener('hashchange', function(){ setTimeout(placeCheckImage, 0); }, {passive:true});
+})();
+</script>
+
+
+<script>
+(function(){
+  function resizeFinishIcon(){
+    var text = document.getElementById('finishTextDynamic');
+    var icon = document.getElementById('finishIconDynamic');
+    if(!text || !icon) return;
+    var width = Math.round(text.getBoundingClientRect().width);
+    icon.style.width = width + 'px';
+    icon.style.height = width + 'px';
+  }
+
+  // Hook into navigation
+  var originalGoTo = window.goTo;
+  window.goTo = function(step){
+    if(typeof originalGoTo === 'function'){ originalGoTo(step); }
+    if(step === 'finish'){
+      setTimeout(resizeFinishIcon, 50);
+      setTimeout(resizeFinishIcon, 200);
+    }
+  };
+
+  window.addEventListener('load', resizeFinishIcon);
+  window.addEventListener('resize', resizeFinishIcon);
 })();
 </script>
 

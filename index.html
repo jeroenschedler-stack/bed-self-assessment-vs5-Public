@@ -169,6 +169,32 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
+
+/* Center the FINISH page content and size the icon relative to the text */
+.sar-page[data-step="finish"] .sar-card{
+  min-height: calc(100vh - var(--header-h) - 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.finish-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:16px;
+}
+.finish-hero svg{
+  display:block;
+  background-color:#1E90FF;
+  border-radius:50%;
+  padding:16px;
+  box-sizing:border-box;
+}
+.finish-text{
+  font-weight:700;
+}
+
 </style>
 </head>
 <body>
@@ -318,26 +344,20 @@ p{color:#434343;line-height:1.6;}
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
   <div class="sar-card">
-    <div class="sar-gap-1"></div>
-
-    <!-- Centered blue checkmark image -->
-    <div class="finish-hero" aria-hidden="true">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-     style="width: 120px; height: 120px; display: block; background-color: #1E90FF;
-            border-radius: 50%; padding: 16px; box-sizing: border-box;">
-  <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
-  <path d="M7 13L10 16L17 9"
-        stroke="white"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-</svg>
+    <div class="finish-stack">
+      <div class="finish-hero" aria-hidden="true">
+        <svg id="finishIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+             style="width: 120px; height: 120px;">
+          <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
+          <path d="M7 13L10 16L17 9"
+                stroke="white"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div id="finishText" class="sar-sub finish-text" style="font-size:24px;">Congratulations</div>
     </div>
-
-    <div class="sar-gap-1"></div>
-
-    <!-- Congratulations text -->
-    <div class="sar-sub" style="text-align:center;font-size:24px;font-weight:700;">Congratulations</div>
 
     <!-- Three blank lines -->
     <div class="sar-gap-1"></div>
@@ -348,7 +368,8 @@ p{color:#434343;line-height:1.6;}
       <button class="sar-btn" data-nav="goto" data-step="peer">Back</button>
       <button class="sar-btn" id="finishPDF">PDF</button>
     </div>
-  </div></div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -1083,6 +1104,38 @@ ok.onclick = function(){
   }
   // Also handle navigation to the finish step
   window.addEventListener('hashchange', function(){ setTimeout(placeCheckImage, 0); }, {passive:true});
+})();
+</script>
+
+
+<script>
+(function(){
+  function sizeFinishIcon(){
+    try{
+      var txt = document.getElementById('finishText');
+      var ico = document.getElementById('finishIcon');
+      if(!txt || !ico) return;
+      // Measure the rendered width of the "Congratulations" text
+      var w = Math.max(48, Math.round(txt.getBoundingClientRect().width));
+      // Apply as both width and height on the SVG
+      ico.style.width  = w + 'px';
+      ico.style.height = w + 'px';
+    }catch(e){/* noop */}
+  }
+
+  // Hook into navigation changes
+  var _goTo = window.goTo;
+  window.goTo = function(step){
+    if(typeof _goTo === 'function'){ _goTo(step); }
+    if(step === 'finish'){
+      // Ensure sizing after layout
+      setTimeout(sizeFinishIcon, 0);
+    }
+  };
+
+  // Also size on first load (in case finish is the first rendered) and on resize
+  window.addEventListener('load', sizeFinishIcon, {once:true});
+  window.addEventListener('resize', sizeFinishIcon, {passive:true});
 })();
 </script>
 

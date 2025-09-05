@@ -277,7 +277,7 @@ p{color:#434343;line-height:1.6;}
   <div class="score-wrap">
     <div class="score-values">
       <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE IS 0%</div>
+      <div class="score-raw" id="scoreNumber">YOUR SCORE 0/100</div>
     </div>
     <div class="scorebar-wrap" aria-label="Score on color bar">
       <div class="scorebar" id="scoreBar">
@@ -322,15 +322,17 @@ p{color:#434343;line-height:1.6;}
   <button id="peerSend" class="sar-btn" type="button">Send</button>
   
 <label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
-  <input id="peerConsent" type="checkbox" style="margin-top:3px;"> <span>I agree to share my self-assessment with my peer</span>
+  <input id="peerConsent" type="checkbox" style="margin-top:3px;">
+ send the review form to my peer<span>I agree to share my self-assessment with my peer</span>
 </label>
 
 </div>
 </div>
-      <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
+      <div class="sar-page" data-step="done"><div class="sar-title">peer assessment</div></div>
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
-  <div class="sar-card">
+  <div class="sar-title">assessment completed</div>
+<div class="sar-card">
     <div class="sar-gap-1"></div>
 
     <!-- Centered blue checkmark image -->
@@ -581,7 +583,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE IS " + pct + "%";
+  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){

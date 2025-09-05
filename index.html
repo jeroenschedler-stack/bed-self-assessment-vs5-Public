@@ -306,7 +306,12 @@ p{color:#434343;line-height:1.6;}
   </div>
   <div class="sar-actions"><button class="sar-btn" data-nav="back">Back</button>
   <button id="peerSend" class="sar-btn" type="button">Send</button>
-  <button id="peerNext" class="sar-btn primary" data-nav="goto" data-step="finish" disabled>Done</button>
+  
+<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0;">
+  <input id="peerConsent" type="checkbox" style="margin-top:3px;">
+  <span>I agree to share my self-assessment with my peer reviewer</span>
+</label>
+<button id="peerNext" class="sar-btn primary" data-nav="goto" data-step="finish" disabled>Done</button>
 </div>
 </div>
       <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
@@ -819,6 +824,85 @@ ok.onclick = function(){
   bind();
   window.addEventListener('hashchange', bind, {passive:true});
   document.addEventListener('click', function(){ setTimeout(bind,0); }, {passive:true});
+})();
+</script>
+
+
+<!-- Peer consent validation -->
+<script>
+(function(){
+  const peerNextButton = document.getElementById('peerNext');
+  const peerNameInput = document.getElementById('peerName');
+  const peerEmailInput = document.getElementById('peerEmail');
+  const peerConsent = document.getElementById('peerConsent');
+
+  function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+
+  function validatePeerConsent(){
+    const nameOk = !!(peerNameInput && peerNameInput.value.trim());
+    const emailOk = !!(peerEmailInput && emailOK(peerEmailInput.value));
+    const consentOk = !!(peerConsent && peerConsent.checked);
+    if (peerNextButton) peerNextButton.disabled = !(nameOk && emailOk && consentOk);
+  }
+
+  peerNameInput && peerNameInput.addEventListener('input', validatePeerConsent);
+  peerEmailInput && peerEmailInput.addEventListener('input', validatePeerConsent);
+  peerConsent && peerConsent.addEventListener('change', validatePeerConsent);
+
+  // initialize state
+  validatePeerConsent();
+})();
+</script>
+
+
+<!-- Peer Consent Checkbox (isolated, dynamic injection) -->
+<script>
+(function(){
+  function injectPeerConsent(){
+    var next = document.getElementById('peerNext');
+    if(!next) return;
+    if(document.getElementById('peerConsent')) return;
+
+    var actions = next.closest('.sar-actions') || next.parentElement;
+
+    var wrap = document.createElement('div');
+    wrap.innerHTML = '<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;">'
+                   + '  <input id="peerConsent" type="checkbox" style="margin-top:3px;">'
+                   + '  <span>I agree to share my self-assessment with my peer reviewer</span>'
+                   + '</label>';
+    var label = wrap.firstChild;
+
+    if(actions && actions.parentNode){
+      actions.parentNode.insertBefore(label, actions);
+    }else{
+      next.parentNode.insertBefore(label, next);
+    }
+
+    var peerNextButton = next;
+    var peerNameInput  = document.getElementById('peerName');
+    var peerEmailInput = document.getElementById('peerEmail');
+    var peerConsent    = document.getElementById('peerConsent');
+
+    function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+    function validatePeerConsent(){
+      var nameOk    = !!(peerNameInput && (peerNameInput.value||'').trim());
+      var emailOk   = !!(peerEmailInput && emailOK(peerEmailInput.value));
+      var consentOk = !!(peerConsent && peerConsent.checked);
+      if (peerNextButton) peerNextButton.disabled = !(nameOk && emailOk && consentOk);
+    }
+
+    peerNameInput && peerNameInput.addEventListener('input', validatePeerConsent);
+    peerEmailInput && peerEmailInput.addEventListener('input', validatePeerConsent);
+    peerConsent && peerConsent.addEventListener('change', validatePeerConsent);
+    validatePeerConsent();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', injectPeerConsent, {once:true});
+  }else{
+    injectPeerConsent();
+  }
+  window.addEventListener('hashchange', function(){ setTimeout(injectPeerConsent, 0); }, {passive:true});
 })();
 </script>
 

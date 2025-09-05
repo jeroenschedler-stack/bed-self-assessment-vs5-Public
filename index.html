@@ -169,6 +169,11 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
+
+/* Align subtext to statement text (not the number) */
+.q-title{padding-left:4ch;text-indent:-4ch}
+.q-sub{padding-left:4ch;text-indent:0}
+
 </style>
 
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
@@ -227,22 +232,21 @@ p{color:#434343;line-height:1.6;}
     <button class="sar-btn sar-hotel" data-hotel="BED">BED</button>
 </div>
 
-        <div class="sar-para-title">HOW TO ASSESS YOURSELF</div>
         <div class="sar-intro" style="margin-bottom:8px">
           <p>Self-assessment helps your personal growth and development. Read each statement and think how you act in these situations. Then select the rating that best fits you. Be honest with yourself. The goal is to know your own strengths and opportunities.</p>
         </div>
 
         <div class="sar-scale" style="margin-bottom:8px">
-          <div class="sar-scale-row"><span class="sar-badge">1</span><span>I don't know I should do this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">2</span><span>I know but I hardly do this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">3</span><span>I know and I usually do it</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">4</span><span>I know and I mostly do it</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">5</span><span>I know it and I always do this</span></div>
+          <div class="sar-scale-row"><span class="sar-badge">1</span><span>I'm not good at this</span></div>
+          <div class="sar-scale-row"><span class="sar-badge">2</span><span>I can do better in this</span></div>
+          <div class="sar-scale-row"><span class="sar-badge">3</span><span>I'm good at this</span></div>
+          <div class="sar-scale-row"><span class="sar-badge">4</span><span>I'm great at this</span></div>
+          <div class="sar-scale-row"><span class="sar-badge">5</span><span>I'm excellent at this</span></div>
         </div>
 
             <div class="sar-gap-3"></div>
-            <div class="sar-gap-3"></div>
-            <div class="sar-actions">
+      <div class="sar-gap-3"></div>
+  <div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -253,6 +257,7 @@ p{color:#434343;line-height:1.6;}
         <div id="q1List" class="q-list" aria-live="polite"></div>
         
     <div class="sar-gap-3"></div>
+<div style="height:0.5em"></div>
 <div class="sar-actions">
           <button class="sar-btn" data-nav="back">Back</button>
           <button id="q1Next" class="sar-btn primary" data-nav="goto" data-step="q2" disabled>Next</button>
@@ -265,6 +270,7 @@ p{color:#434343;line-height:1.6;}
         <div id="q2List" class="q-list" aria-live="polite"></div>
         
     <div class="sar-gap-3"></div>
+<div style="height:0.5em"></div>
 <div class="sar-actions">
           <button class="sar-btn" data-nav="back">Back</button>
           <button id="q2Next" class="sar-btn primary" data-nav="next" disabled>Next</button>
@@ -733,7 +739,7 @@ function updateHeaderTitle(){
   if(activeTitle){ text = activeTitle.textContent.trim(); }
   const step = sarState.step;
   if(!text){
-    const map = {welcome:'Self-Assessment Introduction', q1:'STATEMENTS PART 1', q2:'STATEMENTS PART 2', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
+    const map = {welcome:'SELF-ASSESSMENT REPORT (SAR)', q1:'Statements 1-16', q2:'Statements 17-32', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
 };
     text = map[step] || '';
   }

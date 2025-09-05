@@ -169,12 +169,6 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
-
-/* === SCORE PAGE SPACING NORMALIZATION === */
-.score-values{ gap:6px !important; }
-.score-label + .score-raw{ margin-top:0 !important; }   /* use gap only */
-.score-label + .score-band{ margin-top:6px !important; } /* match the gap above */
-
 </style>
 
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
@@ -246,8 +240,7 @@ p{color:#434343;line-height:1.6;}
         </div>
 
             <div class="sar-gap-3"></div>
-      <div class="sar-gap-3"></div>
-  <div class="sar-actions">
+<div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -283,7 +276,7 @@ p{color:#434343;line-height:1.6;}
   <div class="score-wrap">
     <div class="score-values">
       <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE IS (0%)</div>
+      <div class="score-raw" id="scoreNumber">YOUR SCORE IS 0%</div>
     </div>
     <div class="scorebar-wrap" aria-label="Score on color bar">
       <div class="scorebar" id="scoreBar">
@@ -588,7 +581,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE IS (" + pct + "%)";
+  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){

@@ -169,19 +169,6 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
-
-/* Align statement, subtext, and scale under the same vertical line (after the number) */
-.q-title{ display:flex; gap:0.4ch; align-items:baseline; }
-.q-title .q-num{ display:inline-block; text-align:right; flex:0 0 auto; }
-.q-title .q-text{ display:inline; }
-
-.q-sub{ display:flex; gap:0.4ch; }
-.q-sub .q-num-spacer{ display:inline-block; flex:0 0 auto; }
-.q-sub .q-subtext{ display:inline; }
-
-.q-scale-row{ display:flex; gap:0.4ch; align-items:center; }
-.q-scale-row .q-num-spacer{ display:inline-block; flex:0 0 auto; }
-
 </style>
 
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
@@ -341,7 +328,7 @@ p{color:#434343;line-height:1.6;}
 
 </div>
 </div>
-      <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
+      <div class="sar-page" data-step="done"><div class="sar-title">assessment result</div></div>
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
   <div class="sar-card">
@@ -510,13 +497,6 @@ p{color:#434343;line-height:1.6;}
     }
 
     function renderQuestionHTML(q){
-      // Extract leading number like "12. Text"
-      let num = '', text = q.statement;
-      const mm = /^\s*(\d+)\.\s*(.*)$/.exec(q.statement || '');
-      if(mm){ num = mm[1]; text = mm[2]; }
-      // Width for number column: 1-digit -> 3ch, 2+ digits -> 4ch
-      const numW = (num && num.length >= 2) ? '4ch' : '3ch';
-
       const name = `rate_${q.id}`;
       let radios = '';
       for(let v=1; v<=5; v++){
@@ -526,23 +506,13 @@ p{color:#434343;line-height:1.6;}
           <label for="${id}" aria-label="${q.id} rate ${v}">${v}</label>
         `;
       }
-      
       return `
         <div class="q-item" data-qid="${q.id}">
-          <div class="q-title">
-            ${num ? `<span class="q-num" style="width:${numW}">${num}.</span>` : ''}
-            <span class="q-text">${escapeHTML(text)}</span>
-          </div>
-          <div class="q-sub">
-            ${num ? `<span class="q-num-spacer" style="width:${numW}"></span>` : ''}
-            <span class="q-subtext">${escapeHTML(q.subtext)}</span>
-          </div>
-          <div class="q-scale-row">
-            ${num ? `<span class="q-num-spacer" style="width:${numW}"></span>` : ''}
-            <div class="q-scale">${radios}</div>
-          </div>
+          <div class="q-title">${escapeHTML(q.statement)}</div>
+          <div class="q-sub">${escapeHTML(q.subtext)}</div>
+          <div class="q-scale">${radios}</div>
         </div>
-`;
+      `;
     }
 
     // one handler for both pages

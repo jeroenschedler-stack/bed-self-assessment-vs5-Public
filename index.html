@@ -170,9 +170,10 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-3{ height:3.6em; }
 
 
-/* Ensure identical spacing between labels and following blocks on score page */
-.score-label + .score-raw{ margin-top:6px !important; }
-.score-label + .score-band{ margin-top:6px !important; }
+/* === SCORE PAGE SPACING NORMALIZATION === */
+.score-values{ gap:6px !important; }
+.score-label + .score-raw{ margin-top:0 !important; }   /* use gap only */
+.score-label + .score-band{ margin-top:6px !important; } /* match the gap above */
 
 </style>
 

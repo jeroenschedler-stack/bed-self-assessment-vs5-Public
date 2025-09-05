@@ -572,21 +572,64 @@ function renderScore(){
 }
 let peerBound = false;
 function ensurePeerBindings(){
-  // --- 24-month checkbox: dynamically add to Peer page only ---
-  else{
-      card.appendChild(container);
-    }
+
+  // Bind controls inside the Peer page
+  const card = document.querySelector('.sar-page[data-step="peer"]');
+  if(!card) return;
+  if(card.dataset.bound === '1') return;
+  card.dataset.bound = '1';
+
+  window.sarState = window.sarState || {};
+  sarState.peer = sarState.peer || {};
+
+  const nameEl  = card.querySelector('#peerName');
+  const emailEl = card.querySelector('#peerEmail');
+  const nextBtn = card.querySelector('#peerNext');
+  const backBtn = card.querySelector('#peerBack');
+  const hotelBtns = card.querySelectorAll('.sar-hotels button, .sar-hotels .sar-btn, .sar-hotels [data-hotel]');
+
+  function setHotel(h){
+    sarState.peer.hotel = h;
+    // visual active state (best-effort)
+    hotelBtns.forEach(b => {
+      const label = (b.dataset && b.dataset.hotel) ? b.dataset.hotel : (b.textContent || '').trim();
+      if(b.classList){
+        b.classList.toggle('active', label === h);
+      }
+    });
+    validatePeer();
+  }
+
+  hotelBtns.forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      const h = (btn.dataset && btn.dataset.hotel) ? btn.dataset.hotel : (btn.textContent || '').trim();
+      if(h) setHotel(h);
+    });
+  });
+
+  function onInput(){
+    sarState.peer.name  = (nameEl && nameEl.value || '').trim();
+    sarState.peer.email = (emailEl && emailEl.value || '').trim();
+    validatePeer();
+  }
+  nameEl  && nameEl.addEventListener('input', onInput);
+  emailEl && emailEl.addEventListener('input', onInput);
+
+  validatePeer();
+
+}
   }
 
   if(peerBound){ 
   // 24-month checkbox binding
-  const expEl = card.querySelector('#peerExp24');
+  const expEl = card.querySelector('#peerExp24_removed');
   if(expEl){
     // initialize from state
-    if(sarState.peer && sarState.peer.confirm24){ expEl.checked = true; }
+    if(sarState.peer && sarState.peer.__no_confirm__){ expEl.checked = true; }
     expEl.addEventListener('change', function(){
       sarState.peer = sarState.peer || {};
-      sarState.peer.confirm24 = !!expEl.checked;
+      sarState.peer.__no_confirm__ = !!expEl.checked;
       validatePeer();
     });
   }
@@ -614,7 +657,7 @@ function ensurePeerBindings(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.confirm24)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
+      if(!(sarState.peer && sarState.peer.__no_confirm__)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
     });
   }
   const shareBtn = card.querySelector('#peerShare');
@@ -627,13 +670,13 @@ card.addEventListener('click',(e)=>{
     sarState.peer.hotel = btn.getAttribute('data-hotel') || "";
     
   // 24-month checkbox binding
-  const expEl = card.querySelector('#peerExp24');
+  const expEl = card.querySelector('#peerExp24_removed');
   if(expEl){
     // initialize from state
-    if(sarState.peer && sarState.peer.confirm24){ expEl.checked = true; }
+    if(sarState.peer && sarState.peer.__no_confirm__){ expEl.checked = true; }
     expEl.addEventListener('change', function(){
       sarState.peer = sarState.peer || {};
-      sarState.peer.confirm24 = !!expEl.checked;
+      sarState.peer.__no_confirm__ = !!expEl.checked;
       validatePeer();
     });
   }
@@ -659,7 +702,7 @@ card.addEventListener('click',(e)=>{
         return;
       }
       sarState.peer = sarState.peer || {};
-      sarState.peer.confirm24 = true;
+      sarState.peer.__no_confirm__ = true;
       validatePeer();
     });
   }
@@ -680,22 +723,26 @@ card.addEventListener('click',(e)=>{
         return;
       }
       sarState.peer = sarState.peer || {};
-      sarState.peer.confirm24 = true;
+      sarState.peer.__no_confirm__ = true;
       validatePeer();
     });
   }
   validatePeer();
 }
 function validatePeer(){
+
   const card = document.querySelector('.sar-page[data-step="peer"]');
   if(!card) return;
-  const nameEl = card.querySelector('#peerName');
+  const nameEl  = card.querySelector('#peerName');
   const emailEl = card.querySelector('#peerEmail');
   const nextBtn = card.querySelector('#peerNext');
 
-  if(nextBtn){
-    nextBtn.addEventListener('click', function(e){
-      if(nextBtn.disabled){ e.preventDefault(); return; }
+  const hasName  = ((nameEl && nameEl.value)  || '').trim().length > 0;
+  const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(((emailEl && emailEl.value) || '').trim());
+  const hasHotel = !!(window.sarState && sarState.peer && sarState.peer.hotel);
+  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel);
+
+}
       var hasName = (nameEl && nameEl.value || "").trim().length > 0;
       var hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((emailEl && emailEl.value || "").trim());
       var hasHotel = !!(sarState.peer && sarState.peer.hotel);
@@ -704,7 +751,7 @@ function validatePeer(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.confirm24)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
+      if(!(sarState.peer && sarState.peer.__no_confirm__)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
     });
   }
   const hasName = (nameEl?.value || "").trim().length > 0;

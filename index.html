@@ -783,7 +783,7 @@ function downloadSarResults(){
 
   // Attach only to Peer Done button, without changing existing code.
   function bind(){
-    const next = document.getElementById('peerNext');
+    const next = document.getElementById('peerNext') || document.getElementById('peerSend');
     if(!next) return;
     if(next.dataset.exp24Bound==='1') return;
     next.dataset.exp24Bound='1';
@@ -806,7 +806,8 @@ ok.onclick = function(){
   };
   // Trigger the original click so navigation proceeds
   bypass = true;
-  next.click();
+  next && next.click();
+        try{ if(typeof goTo==='function'){ goTo('finish'); } }catch(_){ var target=document.querySelector('.sar-actions [data-nav="finish"]'); if(target) { target.removeAttribute('data-nav'); target.click(); } }
   // Restore confirm after a short delay
   setTimeout(function(){
     window.__exp24Bypass = false;
@@ -958,7 +959,8 @@ ok.onclick = function(){
       actionBtn.dataset.chainBound = '1';
       actionBtn.addEventListener('click', function(){
         if(actionBtn.disabled) return;
-        if(next && actionBtn !== next){ setTimeout(function(){ next.click(); }, 0); }
+        if(next && actionBtn !== next){ setTimeout(function(){ next && next.click();
+        try{ if(typeof goTo==='function'){ goTo('finish'); } }catch(_){ var target=document.querySelector('.sar-actions [data-nav="finish"]'); if(target) { target.removeAttribute('data-nav'); target.click(); } } }, 0); }
       });
     }
   }

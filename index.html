@@ -284,7 +284,7 @@ p{color:#434343;line-height:1.6;}
   
     <div class="sar-gap-1"></div>
   <div class="sar-para-title">FIND YOUR PEER REVIEWER</div>
-  <div class="sar-intro" style="margin-bottom:12px"><p>You completed your self-assessment report. The next step is your peer review. You can choose anyone in your team but he or she must have been in BED for min. 24 months. When your peer accepts to review you, complete the information below and press Send. This will forward the review form to your peer.</p></div>
+  <div class="sar-intro" style="margin-bottom:12px"><p>You completed your self-assessment. The next step is peer review. Ask anyone in your team who has been in BED for at least 24 months to assess you. When they accept complete the information. When you click Done the review form is send to your peer</p></div>
   <div class="sar-gap-1"></div>
   <div class="sar-row sar-row-fields" style="margin-bottom:12px">
     <label class="sar-field">
@@ -803,7 +803,24 @@ ok.onclick = function(){
   window.confirm = function(msg){
     if (window.__exp24Bypass) return true;
     return __origConfirm.call(window, msg);
-  };
+  try {
+    var consent = document.getElementById('peerConsent');
+    var emailEl = document.getElementById('peerEmail');
+    var addr = emailEl && (emailEl.value || '').trim();
+    if (consent && consent.checked && addr) {
+      var subject = encodeURIComponent('BED Peer Review Request');
+      var bodyTxt = encodeURIComponent('test peer review email');
+      var href = 'mailto:' + encodeURIComponent(addr) + '?subject=' + subject + '&body=' + bodyTxt;
+      // Use a temporary anchor to trigger the client without interfering with navigation
+      var a = document.createElement('a');
+      a.href = href;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ if(a && a.parentNode) a.parentNode.removeChild(a); }, 1000);
+    }
+  } catch(e) { /* no-op */ }
+};
   // Trigger the original click so navigation proceeds
   bypass = true;
   next && next.click();

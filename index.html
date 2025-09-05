@@ -1088,45 +1088,6 @@ ok.onclick = function(){
   } else { runPeerFix(); }
   window.addEventListener('hashchange', function(){ setTimeout(runPeerFix, 0); }, {passive:true});
 })();
-
-// --- Guards to enforce display text consistently ---
-(function(){
-  function enforceScoreAndPeerText(){
-    // Fix score text
-    const raw = document.getElementById('scoreNumber');
-    if(raw && /YOUR SCORE\b/.test(raw.textContent)){
-      const m = raw.textContent.match(/your score\s*(?:is\s*)?\(?\s*(\d+)\s*\/\s*(\d+)\s*\)?/i);
-      if(m){
-        const pct = (parseInt(m[2],10) ? Math.round((parseInt(m[1],10)/parseInt(m[2],10))*100) : 0);
-        raw.textContent = "YOUR SCORE IS " + pct + "%";
-      }else{
-        raw.textContent = raw.textContent.replace(/\(\s*(\d+%)\s*\)/i, "$1");
-        raw.textContent = raw.textContent.replace(/YOUR SCORE(?! IS)/i, "YOUR SCORE IS");
-      }
-    }
-    // Fix peer consent label
-    const consent = document.getElementById('peerConsent');
-    if(consent){
-      const label = consent.closest('label');
-      if(label){
-        const undesired = /send the review/i;
-        if(undesired.test(label.textContent)){
-          label.innerHTML = '<input id="peerConsent" type="checkbox" style="margin-top:3px;"> <span>I agree to share my self-assessment with my peer</span>';
-        }else{
-          const span = label.querySelector('span');
-          if(span && span.textContent.trim() !== 'I agree to share my self-assessment with my peer'){
-            span.textContent = 'I agree to share my self-assessment with my peer';
-          }
-        }
-      }
-    }
-  }
-  document.addEventListener('DOMContentLoaded', enforceScoreAndPeerText);
-  const mo = new MutationObserver(enforceScoreAndPeerText);
-  mo.observe(document.documentElement, {subtree:true, childList:true, characterData:true});
-  window.addEventListener('pageshow', enforceScoreAndPeerText);
-})();
-
 </script>
 
 </body>

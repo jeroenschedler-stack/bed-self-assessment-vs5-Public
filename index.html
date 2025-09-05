@@ -789,11 +789,26 @@ function downloadSarResults(){
       e.preventDefault(); e.stopImmediatePropagation();
       openM();
       // On OK -> proceed exactly as the original click would
-      ok.onclick = function(){
-        closeM();
-        bypass=true;
-        next.click(); // re-trigger original listeners/navigation
-      };
+      
+ok.onclick = function(){
+  closeM();
+  // Temporarily bypass any native confirm() the original handler shows
+  var __origConfirm = window.confirm;
+  window.__exp24Bypass = true;
+  window.confirm = function(msg){
+    if (window.__exp24Bypass) return true;
+    return __origConfirm.call(window, msg);
+  };
+  // Trigger the original click so navigation proceeds
+  bypass = true;
+  next.click();
+  // Restore confirm after a short delay
+  setTimeout(function(){
+    window.__exp24Bypass = false;
+    window.confirm = __origConfirm;
+  }, 600);
+};
+
       // On Cancel -> stay
       no.onclick = closeM;
       mask && (mask.onclick = closeM);

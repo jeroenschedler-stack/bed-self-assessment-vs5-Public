@@ -1,162 +1,162 @@
 [
   {
     "id": "q1",
-    "statement": "I reply to guests very quickly",
+    "statement": "1. I reply to guests very quickly",
     "subtext": "I often check for messages and answer right away"
   },
   {
     "id": "q2",
-    "statement": "I make my replies warm and personal",
+    "statement": "2. I make my replies warm and personal",
     "subtext": "I use their name and add helpful information"
   },
   {
     "id": "q3",
-    "statement": "I make a great first impression",
+    "statement": "3. I make a great first impression",
     "subtext": "I know that starts from the very first message"
   },
   {
     "id": "q4",
-    "statement": "I can see if a guest is stressed or relaxed",
+    "statement": "4. I can see if a guest is stressed or relaxed",
     "subtext": "I adjust the way I check-in to the mood"
   },
   {
     "id": "q5",
-    "statement": "I ask questions before I ask passports",
+    "statement": "5. I ask questions before I ask passports",
     "subtext": "I welcome guests like friends"
   },
   {
     "id": "q6",
-    "statement": "I can check-in a guest in 60 seconds",
+    "statement": "6. I can check-in a guest in 60 seconds",
     "subtext": "I timed this three times with standard check-ins"
   },
   {
     "id": "q7",
-    "statement": "I check in groups differently than FIT",
+    "statement": "7. I check in groups differently than FIT",
     "subtext": "I usually check-in groups with the leader"
   },
   {
     "id": "q8",
-    "statement": "I don't tell guests that check-in time is 14:00",
+    "statement": "8. I don't tell guests that check-in time is 14:00",
     "subtext": "They can check-in as soon as the room is ready"
   },
   {
     "id": "q9",
-    "statement": "I don't show stress when there is a problem",
+    "statement": "9. I don't show stress when there is a problem",
     "subtext": "I know that makes guests really worry"
   },
   {
     "id": "q10",
-    "statement": "I show genuine interest during check-out",
+    "statement": "10. I show genuine interest during check-out",
     "subtext": "I ask about their stay or next destination"
   },
   {
     "id": "q11",
-    "statement": "I make great last impressions",
+    "statement": "11. I make great last impressions",
     "subtext": "I walk them out and wait until their car has left"
   },
   {
     "id": "q12",
-    "statement": "I use names to connect with guests",
+    "statement": "12. I use names to connect with guests",
     "subtext": "When it feels right I tell my name and use theirs"
   },
   {
     "id": "q13",
-    "statement": "I scan every guest every time",
+    "statement": "13. I scan every guest every time",
     "subtext": "I don't look at a group but at each individual"
   },
   {
     "id": "q14",
-    "statement": "I am good at scanning",
+    "statement": "14. I am good at scanning",
     "subtext": "I see what people need before they ask"
   },
   {
     "id": "q15",
-    "statement": "I create unique surprises for guests",
+    "statement": "15. I create unique surprises for guests",
     "subtext": "I do more than offering free things"
   },
   {
     "id": "q16",
-    "statement": "Music is an essential part of the vibe",
+    "statement": "16. Music is an essential part of the vibe",
     "subtext": "I listen to make sure we play the right music"
   },
   {
     "id": "q17",
-    "statement": "I invite guests to share other BED facilities",
+    "statement": "17. I invite guests to share other BED facilities",
     "subtext": "I offer downtown coffee, bigger pool or breakfast"
   },
   {
     "id": "q18",
-    "statement": "its annoying when a room key doesn't work",
+    "statement": "18. its annoying when a room key doesn't work",
     "subtext": "I go up to make sure the new key works"
   },
   {
     "id": "q19",
-    "statement": "I talk with guests because I am interested",
+    "statement": "19. I talk with guests because I am interested",
     "subtext": "When I force myself it will not be real"
   },
   {
     "id": "q20",
-    "statement": "I often give my friends honest feedback",
+    "statement": "20. I often give my friends honest feedback",
     "subtext": "I’m happy to help them to grow"
   },
   {
     "id": "q21",
-    "statement": "My friends often give me honest feedback",
+    "statement": "21. My friends often give me honest feedback",
     "subtext": "I’m happy they help me to grow"
   },
   {
     "id": "q22",
-    "statement": "I can answer most questions about BED",
+    "statement": "22. I can answer most questions about BED",
     "subtext": "I have visited the rooms in all our hotels"
   },
   {
     "id": "q23",
-    "statement": "I understand the meaning of \"showtime\"",
+    "statement": "23. I understand the meaning of \"showtime\"",
     "subtext": "The magic happens from 07:00-10:00"
   },
   {
     "id": "q24",
-    "statement": "I know the story of \"peeling the onion\"",
+    "statement": "24. I know the story of \"peeling the onion\"",
     "subtext": "I don't act. Usually I show my true self"
   },
   {
     "id": "q25",
-    "statement": "I never gossip. I signed “I Promise”",
+    "statement": "25. I never gossip. I signed “I Promise”",
     "subtext": "I don't talk bad when someone's not here"
   },
   {
     "id": "q26",
-    "statement": "I really understand that rules can be flexible",
+    "statement": "26. I really understand that rules can be flexible",
     "subtext": "Without reasons many rules just disappear"
   },
   {
     "id": "q27",
-    "statement": "I am confident about my own judgment",
+    "statement": "27. I am confident about my own judgment",
     "subtext": "I make decisions without asking permission"
   },
   {
     "id": "q28",
-    "statement": "I look after the rooms and public areas",
+    "statement": "28. I look after the rooms and public areas",
     "subtext": "I share responsibility for the whole hotel"
   },
   {
     "id": "q29",
-    "statement": "I look around when I arrive at the hotel",
+    "statement": "29. I look around when I arrive at the hotel",
     "subtext": "I share responsibility for the whole hotel"
   },
   {
     "id": "q30",
-    "statement": "I don't pass problems to others but act myself",
+    "statement": "30. I don't pass problems to others but act myself",
     "subtext": "I follow up later to make sure it's fixed"
   },
   {
     "id": "q31",
-    "statement": "I am not afraid of the CEO or my coach",
+    "statement": "31. I am not afraid of the CEO or my coach",
     "subtext": "I know I am allowed to make mistakes"
   },
   {
     "id": "q32",
-    "statement": "I have no manuals that show me what to do",
+    "statement": "32. I have no manuals that show me what to do",
     "subtext": "That means I cannot do anything wrong"
   }
 ]

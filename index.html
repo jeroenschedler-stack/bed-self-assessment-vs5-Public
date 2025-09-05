@@ -226,18 +226,7 @@ p{color:#434343;line-height:1.6;}
         </div>
 
             <div class="sar-gap-3"></div>
-      <div class="sar-gap-3"></div>
-  
-  <!-- 24-month experience confirmation -->
-  <div class="sar-row" style="margin:8px 0 12px">
-    <label class="sar-check" style="display:flex;gap:10px;align-items:flex-start">
-      <input id="peerExp24" type="checkbox" style="margin-top:4px">
-      <span class="sar-label" style="font-size:14px;line-height:1.2">
-        I confirm this peer has at least 24 months of BED experience
-      </span>
-    </label>
-  </div>
-<div class="sar-actions">
+      <div class="sar-gap-3"></div><div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -583,6 +572,29 @@ function renderScore(){
 }
 let peerBound = false;
 function ensurePeerBindings(){
+  // --- 24-month checkbox: dynamically add to Peer page only ---
+  function createPeer24Checkbox(card){
+    if(card.querySelector('#peerExp24')) return; // already exists
+    const actions = card.querySelector('.sar-actions');
+    const container = document.createElement('div');
+    container.className = 'sar-row';
+    container.style.margin = '8px 0 12px';
+    container.innerHTML = [
+      '<label class="sar-check" style="display:flex;gap:10px;align-items:flex-start">',
+      '  <input id="peerExp24" type="checkbox" style="margin-top:4px">',
+      '  <span class="sar-label" style="font-size:14px;line-height:1.2">',
+      '    I confirm this peer has at least 24 months of BED experience',
+      '  </span>',
+      '</label>'
+    ].join('');
+    // insert before actions row (above Back/Done buttons)
+    if(actions && actions.parentNode){
+      actions.parentNode.insertBefore(container, actions);
+    }else{
+      card.appendChild(container);
+    }
+  }
+
   if(peerBound){ 
   // 24-month checkbox binding
   const expEl = card.querySelector('#peerExp24');

@@ -306,7 +306,12 @@ p{color:#434343;line-height:1.6;}
   </div>
   <div class="sar-actions"><button class="sar-btn" data-nav="back">Back</button>
   <button id="peerSend" class="sar-btn" type="button">Send</button>
-  <button id="peerNext" class="sar-btn primary" data-nav="goto" data-step="finish" disabled>Done</button>
+  
+<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
+  <input id="peerConsent" type="checkbox" style="margin-top:3px;">
+  <span>I agree to share my self-assessment with my peer</span>
+</label>
+
 </div>
 </div>
       <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
@@ -748,5 +753,235 @@ function downloadSarResults(){
 }
 
 </script>
+
+<!-- Custom 24-month confirmation (no browser header) -->
+<style>
+  .exp24__mask{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:2147483646;}
+  .exp24__modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.25);min-width:260px;max-width:92vw;display:none;z-index:2147483647;font-family:inherit}
+  .exp24__hd{padding:14px 16px;border-bottom:1px solid #eee;font-weight:600}
+  .exp24__bd{padding:16px 16px 8px 16px;font-size:15px;line-height:1.35}
+  .exp24__ft{padding:12px 16px 16px 16px;display:flex;gap:10px;justify-content:flex-end}
+  .exp24__btn{border:none;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
+  .exp24__btn--ghost{background:#f2f4f7}
+  .exp24__btn--primary{background:#1E90FF;color:#fff}
+</style>
+<div id="exp24Mask" class="exp24__mask"></div>
+<div id="exp24Modal" class="exp24__modal" role="dialog" aria-modal="true" aria-labelledby="exp24Title">
+  <div class="exp24__hd" id="exp24Title">Peer eligibility</div>
+  <div class="exp24__bd">Does your peer have at least 24 months of BED experience?</div>
+  <div class="exp24__ft">
+    <button id="exp24Cancel" class="exp24__btn exp24__btn--ghost" type="button">Cancel</button>
+    <button id="exp24OK" class="exp24__btn exp24__btn--primary" type="button">OK</button>
+  </div>
+</div>
+<script>
+(function(){
+  function qs(id){ return document.getElementById(id); }
+  const mask=qs('exp24Mask'), modal=qs('exp24Modal'), ok=qs('exp24OK'), no=qs('exp24Cancel');
+  function openM(){ if(mask) mask.style.display='block'; if(modal) modal.style.display='block'; }
+  function closeM(){ if(mask) mask.style.display='none'; if(modal) modal.style.display='none'; }
+
+  // Attach only to Peer Done button, without changing existing code.
+  function bind(){
+    const next = document.getElementById('peerNext') || document.getElementById('peerSend');
+    if(!next) return;
+    if(next.dataset.exp24Bound==='1') return;
+    next.dataset.exp24Bound='1';
+
+    let bypass=false;
+    next.addEventListener('click', function(e){
+      if(bypass){ bypass=false; return; }
+      e.preventDefault(); e.stopImmediatePropagation();
+      openM();
+      // On OK -> proceed exactly as the original click would
+      
+ok.onclick = function(){
+  closeM();
+  // Temporarily bypass any native confirm() the original handler shows
+  var __origConfirm = window.confirm;
+  window.__exp24Bypass = true;
+  window.confirm = function(msg){
+    if (window.__exp24Bypass) return true;
+    return __origConfirm.call(window, msg);
+  };
+  // Trigger the original click so navigation proceeds
+  bypass = true;
+  next && next.click();
+        try{ if(typeof goTo==='function'){ goTo('finish'); } }catch(_){ var target=document.querySelector('.sar-actions [data-nav="finish"]'); if(target) { target.removeAttribute('data-nav'); target.click(); } }
+  // Restore confirm after a short delay
+  setTimeout(function(){
+    window.__exp24Bypass = false;
+    window.confirm = __origConfirm;
+  }, 600);
+};
+
+      // On Cancel -> stay
+      no.onclick = closeM;
+      mask && (mask.onclick = closeM);
+    }, true); // capture so we intercept before app navigation
+  }
+
+  // initial + on step changes
+  bind();
+  window.addEventListener('hashchange', bind, {passive:true});
+  document.addEventListener('click', function(){ setTimeout(bind,0); }, {passive:true});
+})();
+</script>
+
+
+<!-- Peer consent validation -->
+<script>
+(function(){
+  const peerNextButton = document.getElementById('peerNext');
+  const peerNameInput = document.getElementById('peerName');
+  const peerEmailInput = document.getElementById('peerEmail');
+  const peerConsent = document.getElementById('peerConsent');
+
+  function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+
+  function validatePeerConsent(){
+    const nameOk = !!(peerNameInput && peerNameInput.value.trim());
+    const emailOk = !!(peerEmailInput && emailOK(peerEmailInput.value));
+    const consentOk = !!(peerConsent && peerConsent.checked);
+    if (peerNextButton) peerNextButton.disabled = !(nameOk && emailOk && consentOk);
+  }
+
+  peerNameInput && peerNameInput.addEventListener('input', validatePeerConsent);
+  peerEmailInput && peerEmailInput.addEventListener('input', validatePeerConsent);
+  peerConsent && peerConsent.addEventListener('change', validatePeerConsent);
+
+  // initialize state
+  validatePeerConsent();
+})();
+</script>
+
+
+
+
+
+<!-- Peer Consent Checkbox (isolated, positioned under hotels) -->
+<script>
+(function(){
+  function injectPeerConsent(){
+    var next = document.getElementById('peerNext');
+    if(!next) return;
+    if(document.getElementById('peerConsent')) return;
+
+    // Find hotel buttons container
+    var hotelRow = document.querySelector('.sar-row.sar-hotels') || next.closest('.sar-page').querySelector('.sar-hotels');
+    if(!hotelRow) return;
+
+    // Build the checkbox block
+    var wrap = document.createElement('div');
+    wrap.style.margin = '10px 0 16px';
+    wrap.innerHTML = '<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3; font-size:14px; font-family:inherit;">'
+                   + '  <input id="peerConsent" type="checkbox" style="margin-top:3px;">'
+                   + '  <span>I agree to share my self-assessment with my peer reviewer</span>'
+                   + '</label>';
+    var label = wrap.firstChild;
+
+    // Insert directly after hotel buttons
+    if(hotelRow && hotelRow.parentNode){
+      hotelRow.parentNode.insertBefore(label, hotelRow.nextSibling);
+    }
+
+    // Hook validation so Done is enabled only when consent given
+    var peerNameInput  = document.getElementById('peerName');
+    var peerEmailInput = document.getElementById('peerEmail');
+    var peerConsent    = document.getElementById('peerConsent');
+
+    function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+    function validatePeerConsent(){
+      var nameOk    = !!(peerNameInput && (peerNameInput.value||'').trim());
+      var emailOk   = !!(peerEmailInput && emailOK(peerEmailInput.value));
+      var consentOk = !!(peerConsent && peerConsent.checked);
+      if (next) next.disabled = !(nameOk && emailOk && consentOk);
+    }
+
+    peerNameInput && peerNameInput.addEventListener('input', validatePeerConsent);
+    peerEmailInput && peerEmailInput.addEventListener('input', validatePeerConsent);
+    peerConsent && peerConsent.addEventListener('change', validatePeerConsent);
+    validatePeerConsent();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', injectPeerConsent, {once:true});
+  }else{
+    injectPeerConsent();
+  }
+  window.addEventListener('hashchange', function(){ setTimeout(injectPeerConsent, 0); }, {passive:true});
+})();
+</script>
+
+
+<!-- Peer Consent Adjustments: rename Send->Done, require consent, and chain to Next -->
+<script>
+(function(){
+  function run(){
+    var next = document.getElementById('peerNext');
+    var send = document.getElementById('peerSend');
+    if(!next && !send) return;
+
+    // Rename "Send" to "Done" (text only)
+    if(send && send.textContent && send.textContent.trim().toLowerCase() === 'send'){
+      send.textContent = 'Done';
+    }
+
+    // Ensure consent checkbox sits above actions
+    var consent = document.getElementById('peerConsent');
+    var actions = (next && next.closest('.sar-actions')) || (send && send.closest('.sar-actions')) || (next||send).parentElement;
+    if(consent && actions && actions.parentNode){
+      var label = consent.closest('label');
+      if(label && actions.previousElementSibling !== label){
+        actions.parentNode.insertBefore(label, actions);
+      }
+    }
+
+    // Validation: enable action only when name/email/consent valid
+    var nameEl  = document.getElementById('peerName');
+    var emailEl = document.getElementById('peerEmail');
+    function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+    function validate(){
+      var ok = !!(nameEl && (nameEl.value||'').trim()) &&
+               !!(emailEl && emailOK(emailEl.value)) &&
+               !!(document.getElementById('peerConsent') && document.getElementById('peerConsent').checked);
+      var target = send || next;
+      if(target) target.disabled = !ok;
+    
+    // Sync visual style: blue when enabled (uses existing .sar-btn.primary)
+    if (target) {
+      if (target.disabled) {
+        target.classList.remove('primary');
+      } else {
+        target.classList.add('primary');
+      }
+    }
+    } else {
+        target.classList.add('sar-btn-active');
+      }
+    }
+    }
+    nameEl && nameEl.addEventListener('input', validate);
+    emailEl && emailEl.addEventListener('input', validate);
+    if(consent) consent.addEventListener('change', validate);
+    validate();
+
+    // Clicking the action button should also trigger Next (for 24-month confirm + navigation)
+    var actionBtn = send || next;
+    if(actionBtn && !actionBtn.dataset.chainBound){
+      actionBtn.dataset.chainBound = '1';
+      actionBtn.addEventListener('click', function(){
+        if(actionBtn.disabled) return;
+        if(next && actionBtn !== next){ setTimeout(function(){ next && next.click();
+        try{ if(typeof goTo==='function'){ goTo('finish'); } }catch(_){ var target=document.querySelector('.sar-actions [data-nav="finish"]'); if(target) { target.removeAttribute('data-nav'); target.click(); } } }, 0); }
+      });
+    }
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', run, {once:true}); }
+  else { run(); }
+  window.addEventListener('hashchange', function(){ setTimeout(run,0); }, {passive:true});
+})();
+</script>
+
 </body>
 </html>

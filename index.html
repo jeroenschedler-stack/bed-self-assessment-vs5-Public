@@ -328,11 +328,10 @@ p{color:#434343;line-height:1.6;}
 
 </div>
 </div>
-      <div class="sar-page" data-step="done"><div class="sar-title">peer assessment</div></div>
+      <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
-  <div class="sar-title">assessment completed</div>
-<div class="sar-card">
+  <div class="sar-card">
     <div class="sar-gap-1"></div>
 
     <!-- Centered blue checkmark image -->
@@ -733,8 +732,7 @@ function updateHeaderTitle(){
   if(activeTitle){ text = activeTitle.textContent.trim(); }
   const step = sarState.step;
   if(!text){
-    const map = {welcome:'SELF-ASSESSMENT REPORT (SAR)', q1:'STATEMENTS PART 1', q2:'STATEMENTS PART 2', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
-};
+    const map = {welcome:'assessment report', q1:'statement 1-16', q2:'statements 17-32', score:'assessment report', peer:'peer assessment', finish:'assessment completed'};
     text = map[step] || '';
   }
   slot.textContent = text;

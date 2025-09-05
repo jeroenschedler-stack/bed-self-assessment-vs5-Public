@@ -170,12 +170,17 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-3{ height:3.6em; }
 
 
-/* Align subtext to statement text (after number) */
+/* Align statement, subtext, and scale under the same vertical line (after the number) */
 .q-title{ display:flex; gap:0.4ch; align-items:baseline; }
-.q-title .q-num{ display:inline-block; text-align:right; }
+.q-title .q-num{ display:inline-block; text-align:right; flex:0 0 auto; }
 .q-title .q-text{ display:inline; }
+
 .q-sub{ display:flex; gap:0.4ch; }
-.q-sub .q-num-spacer{ display:inline-block; }
+.q-sub .q-num-spacer{ display:inline-block; flex:0 0 auto; }
+.q-sub .q-subtext{ display:inline; }
+
+.q-scale-row{ display:flex; gap:0.4ch; align-items:center; }
+.q-scale-row .q-num-spacer{ display:inline-block; flex:0 0 auto; }
 
 </style>
 
@@ -507,9 +512,9 @@ p{color:#434343;line-height:1.6;}
     function renderQuestionHTML(q){
       // Extract leading number like "12. Text"
       let num = '', text = q.statement;
-      const m = /^\s*(\d+)\.\s*(.*)$/.exec(q.statement || '');
-      if(m){ num = m[1]; text = m[2]; }
-      // Width for number column: 1-digit -> 3ch (digit + '.' + space), 2+ digits -> 4ch
+      const mm = /^\s*(\d+)\.\s*(.*)$/.exec(q.statement || '');
+      if(mm){ num = mm[1]; text = mm[2]; }
+      // Width for number column: 1-digit -> 3ch, 2+ digits -> 4ch
       const numW = (num && num.length >= 2) ? '4ch' : '3ch';
 
       const name = `rate_${q.id}`;
@@ -532,7 +537,10 @@ p{color:#434343;line-height:1.6;}
             ${num ? `<span class="q-num-spacer" style="width:${numW}"></span>` : ''}
             <span class="q-subtext">${escapeHTML(q.subtext)}</span>
           </div>
-          <div class="q-scale">${radios}</div>
+          <div class="q-scale-row">
+            ${num ? `<span class="q-num-spacer" style="width:${numW}"></span>` : ''}
+            <div class="q-scale">${radios}</div>
+          </div>
         </div>
 `;
     }

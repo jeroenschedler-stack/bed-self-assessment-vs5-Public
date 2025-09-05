@@ -748,5 +748,46 @@ function downloadSarResults(){
 }
 
 </script>
+
+<script>
+// One-time 24-month experience confirmation before proceeding to Finish
+(function(){
+  const peerNext = document.getElementById('peerNext'); // the "Done" button
+  if (!peerNext) return;
+
+  // Persist in memory so the user isn't asked again after confirming once
+  window.sarState = window.sarState || {};
+  if (!('peer' in sarState)) sarState.peer = {};
+
+  function ensure24MonthConfirmation(e){
+    // Guard: only ask if not already confirmed
+    if (!sarState.peer.confirm24){
+      const ok = confirm('Does your peer have at least 24 months of BED experience?');
+      if (!ok){
+        e && e.preventDefault();
+        alert('Please choose a peer with at least 24 months experience.');
+        return false;
+      }
+      sarState.peer.confirm24 = true; // remember
+    }
+    return true;
+  }
+
+  // Hook the "Done" button
+  peerNext.addEventListener('click', function(e){
+    // If the confirmation fails or is canceled, block navigation
+    if (!ensure24MonthConfirmation(e)) return;
+    // Otherwise, let your existing navigation proceed (data-nav / router)
+  });
+
+  // Optional hygiene: if user edits peer fields, clear the confirmation
+  const nameEl  = document.getElementById('peerName');
+  const emailEl = document.getElementById('peerEmail');
+  function clearConfirm(){ if (sarState.peer) sarState.peer.confirm24 = false; }
+  nameEl  && nameEl.addEventListener('input', clearConfirm);
+  emailEl && emailEl.addEventListener('input', clearConfirm);
+})();
+</script>
+
 </body>
 </html>

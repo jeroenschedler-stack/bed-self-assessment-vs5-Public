@@ -277,7 +277,7 @@ p{color:#434343;line-height:1.6;}
   <div class="score-wrap">
     <div class="score-values">
       <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE 0/100</div>
+      <div class="score-raw" id="scoreNumber">YOUR SCORE IS 0%</div>
     </div>
     <div class="scorebar-wrap" aria-label="Score on color bar">
       <div class="scorebar" id="scoreBar">
@@ -323,7 +323,7 @@ p{color:#434343;line-height:1.6;}
   
 <label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
   <input id="peerConsent" type="checkbox" style="margin-top:3px;">
- send the review form to my peer<span>I agree to share my self-assessment with my peer</span>
+ <span>I agree to share my self-assessment with my peer</span>
 </label>
 
 </div>
@@ -582,7 +582,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
+  if(rawEl) rawEl.textContent = "YOUR SCORE IS " + pct + "%";
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){
@@ -732,7 +732,8 @@ function updateHeaderTitle(){
   if(activeTitle){ text = activeTitle.textContent.trim(); }
   const step = sarState.step;
   if(!text){
-    const map = {welcome:'assessment report', q1:'statement 1-16', q2:'statements 17-32', score:'assessment report', peer:'peer assessment', finish:'assessment completed'};
+    const map = {welcome:'SELF-ASSESSMENT REPORT (SAR)', q1:'STATEMENTS PART 1', q2:'STATEMENTS PART 2', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
+};
     text = map[step] || '';
   }
   slot.textContent = text;
@@ -1087,6 +1088,45 @@ ok.onclick = function(){
   } else { runPeerFix(); }
   window.addEventListener('hashchange', function(){ setTimeout(runPeerFix, 0); }, {passive:true});
 })();
+
+// --- Guards to enforce display text consistently ---
+(function(){
+  function enforceScoreAndPeerText(){
+    // Fix score text
+    const raw = document.getElementById('scoreNumber');
+    if(raw && /YOUR SCORE\b/.test(raw.textContent)){
+      const m = raw.textContent.match(/your score\s*(?:is\s*)?\(?\s*(\d+)\s*\/\s*(\d+)\s*\)?/i);
+      if(m){
+        const pct = (parseInt(m[2],10) ? Math.round((parseInt(m[1],10)/parseInt(m[2],10))*100) : 0);
+        raw.textContent = "YOUR SCORE IS " + pct + "%";
+      }else{
+        raw.textContent = raw.textContent.replace(/\(\s*(\d+%)\s*\)/i, "$1");
+        raw.textContent = raw.textContent.replace(/YOUR SCORE(?! IS)/i, "YOUR SCORE IS");
+      }
+    }
+    // Fix peer consent label
+    const consent = document.getElementById('peerConsent');
+    if(consent){
+      const label = consent.closest('label');
+      if(label){
+        const undesired = /send the review/i;
+        if(undesired.test(label.textContent)){
+          label.innerHTML = '<input id="peerConsent" type="checkbox" style="margin-top:3px;"> <span>I agree to share my self-assessment with my peer</span>';
+        }else{
+          const span = label.querySelector('span');
+          if(span && span.textContent.trim() !== 'I agree to share my self-assessment with my peer'){
+            span.textContent = 'I agree to share my self-assessment with my peer';
+          }
+        }
+      }
+    }
+  }
+  document.addEventListener('DOMContentLoaded', enforceScoreAndPeerText);
+  const mo = new MutationObserver(enforceScoreAndPeerText);
+  mo.observe(document.documentElement, {subtree:true, childList:true, characterData:true});
+  window.addEventListener('pageshow', enforceScoreAndPeerText);
+})();
+
 </script>
 
 </body>

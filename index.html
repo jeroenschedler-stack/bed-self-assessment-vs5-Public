@@ -169,6 +169,14 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
+
+/* Align subtext to statement text (after number) */
+.q-title{ display:flex; gap:0.4ch; align-items:baseline; }
+.q-title .q-num{ display:inline-block; text-align:right; }
+.q-title .q-text{ display:inline; }
+.q-sub{ display:flex; gap:0.4ch; }
+.q-sub .q-num-spacer{ display:inline-block; }
+
 </style>
 
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
@@ -273,13 +281,11 @@ p{color:#434343;line-height:1.6;}
       <!-- Placeholders -->
       <div class="sar-page" data-step="score">
   
-  
-  <div class="sar-title" style="display:none">your assessment results</div>
-<div class="score-gap" aria-hidden="true"><br><br><br><br></div>
+  <div class="score-gap" aria-hidden="true"><br><br><br><br></div>
   <div class="score-wrap">
     <div class="score-values">
       <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE is 0%</div>
+      <div class="score-raw" id="scoreNumber">YOUR SCORE 0/100</div>
     </div>
     <div class="scorebar-wrap" aria-label="Score on color bar">
       <div class="scorebar" id="scoreBar">
@@ -499,6 +505,13 @@ p{color:#434343;line-height:1.6;}
     }
 
     function renderQuestionHTML(q){
+      // Extract leading number like "12. Text"
+      let num = '', text = q.statement;
+      const m = /^\s*(\d+)\.\s*(.*)$/.exec(q.statement || '');
+      if(m){ num = m[1]; text = m[2]; }
+      // Width for number column: 1-digit -> 3ch (digit + '.' + space), 2+ digits -> 4ch
+      const numW = (num && num.length >= 2) ? '4ch' : '3ch';
+
       const name = `rate_${q.id}`;
       let radios = '';
       for(let v=1; v<=5; v++){
@@ -508,13 +521,20 @@ p{color:#434343;line-height:1.6;}
           <label for="${id}" aria-label="${q.id} rate ${v}">${v}</label>
         `;
       }
+      
       return `
         <div class="q-item" data-qid="${q.id}">
-          <div class="q-title">${escapeHTML(q.statement)}</div>
-          <div class="q-sub">${escapeHTML(q.subtext)}</div>
+          <div class="q-title">
+            ${num ? `<span class="q-num" style="width:${numW}">${num}.</span>` : ''}
+            <span class="q-text">${escapeHTML(text)}</span>
+          </div>
+          <div class="q-sub">
+            ${num ? `<span class="q-num-spacer" style="width:${numW}"></span>` : ''}
+            <span class="q-subtext">${escapeHTML(q.subtext)}</span>
+          </div>
           <div class="q-scale">${radios}</div>
         </div>
-      `;
+`;
     }
 
     // one handler for both pages
@@ -584,7 +604,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE is " + pct + "%";
+  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){

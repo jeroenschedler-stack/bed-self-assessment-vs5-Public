@@ -170,30 +170,29 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-3{ height:3.6em; }
 
 
-/* Center the FINISH page content and size the icon relative to the text */
-.sar-page[data-step="finish"] .sar-card{
-  min-height: calc(100vh - var(--header-h) - 24px);
+/* === FINISH PAGE LAYOUT & SIZING === */
+.sar-page[data-step="finish"] > .sar-card{
+  min-height: calc(100dvh - var(--header-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sar-page[data-step="finish"] .finish-center{
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px 8px;
 }
-.finish-stack{
+.sar-page[data-step="finish"] .finish-stack{
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
-  gap:16px;
+  gap:18px;
 }
-.finish-hero svg{
-  display:block;
-  background-color:#1E90FF;
-  border-radius:50%;
-  padding:16px;
-  box-sizing:border-box;
-}
-.finish-text{
-  font-weight:700;
-}
+#finishIcon{ display:block; }
+#finishText{ font-size: 24px; font-weight: 700; line-height:1.1; }
 
 </style>
 </head>
@@ -344,10 +343,9 @@ p{color:#434343;line-height:1.6;}
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
   <div class="sar-card">
-    <div class="finish-stack">
-      <div class="finish-hero" aria-hidden="true">
-        <svg id="finishIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-             style="width: 120px; height: 120px;">
+    <div class="finish-center">
+      <div class="finish-stack">
+        <svg id="finishIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
           <path d="M7 13L10 16L17 9"
                 stroke="white"
@@ -355,14 +353,9 @@ p{color:#434343;line-height:1.6;}
                 stroke-linecap="round"
                 stroke-linejoin="round"/>
         </svg>
+        <div id="finishText" class="sar-sub">Congratulations</div>
       </div>
-      <div id="finishText" class="sar-sub finish-text" style="font-size:24px;">Congratulations</div>
     </div>
-
-    <!-- Three blank lines -->
-    <div class="sar-gap-1"></div>
-    <div class="sar-gap-1"></div>
-    <div class="sar-gap-1"></div>
 
     <div class="sar-actions">
       <button class="sar-btn" data-nav="goto" data-step="peer">Back</button>
@@ -1110,32 +1103,43 @@ ok.onclick = function(){
 
 <script>
 (function(){
-  function sizeFinishIcon(){
-    try{
-      var txt = document.getElementById('finishText');
-      var ico = document.getElementById('finishIcon');
-      if(!txt || !ico) return;
-      // Measure the rendered width of the "Congratulations" text
-      var w = Math.max(48, Math.round(txt.getBoundingClientRect().width));
-      // Apply as both width and height on the SVG
-      ico.style.width  = w + 'px';
-      ico.style.height = w + 'px';
-    }catch(e){/* noop */}
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+  function resizeFinishIcon(){
+    var text = document.getElementById('finishText');
+    var icon = document.getElementById('finishIcon');
+    if(!text || !icon) return;
+    // Measure text width
+    var rect = text.getBoundingClientRect();
+    var card = text.closest('.sar-card') || document.body;
+    var cardWidth = (card.getBoundingClientRect ? card.getBoundingClientRect().width : window.innerWidth) || window.innerWidth;
+    // Allow some padding; clamp to viewport width
+    var target = clamp(Math.round(rect.width), 96, Math.round(Math.min(cardWidth - 64, window.innerWidth * 0.9)));
+    icon.style.width  = target + 'px';
+    icon.style.height = target + 'px';
   }
 
-  // Hook into navigation changes
-  var _goTo = window.goTo;
+  // Integrate with step navigation
+  var origGoTo = window.goTo;
   window.goTo = function(step){
-    if(typeof _goTo === 'function'){ _goTo(step); }
+    if(typeof origGoTo === 'function'){ origGoTo(step); }
     if(step === 'finish'){
-      // Ensure sizing after layout
-      setTimeout(sizeFinishIcon, 0);
+      requestAnimationFrame(resizeFinishIcon);
+      setTimeout(resizeFinishIcon, 50);
+      setTimeout(resizeFinishIcon, 200);
     }
   };
 
-  // Also size on first load (in case finish is the first rendered) and on resize
-  window.addEventListener('load', sizeFinishIcon, {once:true});
-  window.addEventListener('resize', sizeFinishIcon, {passive:true});
+  window.addEventListener('load', function(){
+    if(document.querySelector('.sar-page[data-step="finish"].active')){
+      resizeFinishIcon();
+    }
+  }, { once: true });
+
+  window.addEventListener('resize', function(){
+    if(document.querySelector('.sar-page[data-step="finish"].active')){
+      resizeFinishIcon();
+    }
+  }, { passive: true });
 })();
 </script>
 

@@ -855,7 +855,10 @@ ok.onclick = function(){
 </script>
 
 
-<!-- Peer Consent Checkbox (isolated, dynamic injection) -->
+
+
+
+<!-- Peer Consent Checkbox (isolated, positioned under hotels) -->
 <script>
 (function(){
   function injectPeerConsent(){
@@ -863,22 +866,25 @@ ok.onclick = function(){
     if(!next) return;
     if(document.getElementById('peerConsent')) return;
 
-    var actions = next.closest('.sar-actions') || next.parentElement;
+    // Find hotel buttons container
+    var hotelRow = document.querySelector('.sar-row.sar-hotels') || next.closest('.sar-page').querySelector('.sar-hotels');
+    if(!hotelRow) return;
 
+    // Build the checkbox block
     var wrap = document.createElement('div');
+    wrap.style.margin = '10px 0 16px';
     wrap.innerHTML = '<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;">'
                    + '  <input id="peerConsent" type="checkbox" style="margin-top:3px;">'
                    + '  <span>I agree to share my self-assessment with my peer reviewer</span>'
                    + '</label>';
     var label = wrap.firstChild;
 
-    if(actions && actions.parentNode){
-      actions.parentNode.insertBefore(label, actions);
-    }else{
-      next.parentNode.insertBefore(label, next);
+    // Insert directly after hotel buttons
+    if(hotelRow && hotelRow.parentNode){
+      hotelRow.parentNode.insertBefore(label, hotelRow.nextSibling);
     }
 
-    var peerNextButton = next;
+    // Hook validation so Done is enabled only when consent given
     var peerNameInput  = document.getElementById('peerName');
     var peerEmailInput = document.getElementById('peerEmail');
     var peerConsent    = document.getElementById('peerConsent');
@@ -888,7 +894,7 @@ ok.onclick = function(){
       var nameOk    = !!(peerNameInput && (peerNameInput.value||'').trim());
       var emailOk   = !!(peerEmailInput && emailOK(peerEmailInput.value));
       var consentOk = !!(peerConsent && peerConsent.checked);
-      if (peerNextButton) peerNextButton.disabled = !(nameOk && emailOk && consentOk);
+      if (next) next.disabled = !(nameOk && emailOk && consentOk);
     }
 
     peerNameInput && peerNameInput.addEventListener('input', validatePeerConsent);
@@ -903,6 +909,62 @@ ok.onclick = function(){
     injectPeerConsent();
   }
   window.addEventListener('hashchange', function(){ setTimeout(injectPeerConsent, 0); }, {passive:true});
+})();
+</script>
+
+
+<!-- Peer Consent Adjustments: rename Send->Done, require consent, and chain to Next -->
+<script>
+(function(){
+  function run(){
+    var next = document.getElementById('peerNext');
+    var send = document.getElementById('peerSend');
+    if(!next && !send) return;
+
+    // Rename "Send" to "Done" (text only)
+    if(send && send.textContent && send.textContent.trim().toLowerCase() === 'send'){
+      send.textContent = 'Done';
+    }
+
+    // Ensure consent checkbox sits above actions
+    var consent = document.getElementById('peerConsent');
+    var actions = (next && next.closest('.sar-actions')) || (send && send.closest('.sar-actions')) || (next||send).parentElement;
+    if(consent && actions && actions.parentNode){
+      var label = consent.closest('label');
+      if(label && actions.previousElementSibling !== label){
+        actions.parentNode.insertBefore(label, actions);
+      }
+    }
+
+    // Validation: enable action only when name/email/consent valid
+    var nameEl  = document.getElementById('peerName');
+    var emailEl = document.getElementById('peerEmail');
+    function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+    function validate(){
+      var ok = !!(nameEl && (nameEl.value||'').trim()) &&
+               !!(emailEl && emailOK(emailEl.value)) &&
+               !!(document.getElementById('peerConsent') && document.getElementById('peerConsent').checked);
+      var target = send || next;
+      if(target) target.disabled = !ok;
+    }
+    nameEl && nameEl.addEventListener('input', validate);
+    emailEl && emailEl.addEventListener('input', validate);
+    if(consent) consent.addEventListener('change', validate);
+    validate();
+
+    // Clicking the action button should also trigger Next (for 24-month confirm + navigation)
+    var actionBtn = send || next;
+    if(actionBtn && !actionBtn.dataset.chainBound){
+      actionBtn.dataset.chainBound = '1';
+      actionBtn.addEventListener('click', function(){
+        if(actionBtn.disabled) return;
+        if(next && actionBtn !== next){ setTimeout(function(){ next.click(); }, 0); }
+      });
+    }
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', run, {once:true}); }
+  else { run(); }
+  window.addEventListener('hashchange', function(){ setTimeout(run,0); }, {passive:true});
 })();
 </script>
 

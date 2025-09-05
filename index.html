@@ -573,24 +573,7 @@ function renderScore(){
 let peerBound = false;
 function ensurePeerBindings(){
   // --- 24-month checkbox: dynamically add to Peer page only ---
-  function createPeer24Checkbox(card){
-    if(card.querySelector('#peerExp24')) return; // already exists
-    const actions = card.querySelector('.sar-actions');
-    const container = document.createElement('div');
-    container.className = 'sar-row';
-    container.style.margin = '8px 0 12px';
-    container.innerHTML = [
-      '<label class="sar-check" style="display:flex;gap:10px;align-items:flex-start">',
-      '  <input id="peerExp24" type="checkbox" style="margin-top:4px">',
-      '  <span class="sar-label" style="font-size:14px;line-height:1.2">',
-      '    I confirm this peer has at least 24 months of BED experience',
-      '  </span>',
-      '</label>'
-    ].join('');
-    // insert before actions row (above Back/Done buttons)
-    if(actions && actions.parentNode){
-      actions.parentNode.insertBefore(container, actions);
-    }else{
+  else{
       card.appendChild(container);
     }
   }
@@ -727,7 +710,7 @@ function validatePeer(){
   const hasName = (nameEl?.value || "").trim().length > 0;
   const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((emailEl?.value || "").trim());
   const hasHotel = !!(sarState.peer && sarState.peer.hotel);
-  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel && (sarState.peer && sarState.peer.confirm24));
+  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel);
 }
 function updateHeaderTitle(){
   const slot = document.getElementById('sarPageTitle');
@@ -772,5 +755,80 @@ function downloadSarResults(){
 }
 
 </script>
+
+<style>
+  .exp24-mask{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:9998;}
+  .exp24-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;max-width:92vw;background:#fff;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);display:none;z-index:9999;font-family:inherit;}
+  .exp24-modal .hd{padding:14px 16px;border-bottom:1px solid #eee;font-weight:600;}
+  .exp24-modal .bd{padding:16px;font-size:15px;line-height:1.35;}
+  .exp24-modal .ft{padding:12px 16px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eee;}
+  .exp24-btn{border:none;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
+  .exp24-btn.primary{background:#1E90FF;color:#fff}
+  .exp24-btn.ghost{background:#f2f4f7}
+</style>
+<div id="exp24Mask" class="exp24-mask"></div>
+<div id="exp24Modal" class="exp24-modal" role="dialog" aria-modal="true" aria-labelledby="exp24Hd">
+  <div class="hd" id="exp24Hd">Peer eligibility</div>
+  <div class="bd">Does your peer have at least 24 months of BED experience?</div>
+  <div class="ft">
+    <button id="exp24Cancel" class="exp24-btn ghost" type="button">Cancel</button>
+    <button id="exp24OK" class="exp24-btn primary" type="button">OK</button>
+  </div>
+</div>
+<script>
+(function(){
+  // Helpers to open/close the modal
+  const mask  = document.getElementById('exp24Mask');
+  const modal = document.getElementById('exp24Modal');
+  const btnOK = document.getElementById('exp24OK');
+  const btnNO = document.getElementById('exp24Cancel');
+  function openM(){ mask.style.display='block'; modal.style.display='block'; }
+  function closeM(){ mask.style.display='none'; modal.style.display='none'; }
+  mask && mask.addEventListener('click', closeM);
+  btnNO && btnNO.addEventListener('click', closeM);
+
+  // Attach once when Peer page is active
+  function attachPeerDone(){
+    // Prefer explicit id if present
+    let done = document.getElementById('peerNext');
+    // Fallback: find a button that navigates to finish inside the active peer card
+    if(!done){
+      const peerCard = document.querySelector('.sar-page.active, .sar-card.active, .sar-page.peer, [data-step="peer"]');
+      if(peerCard){
+        done = peerCard.querySelector('.sar-actions [data-nav="finish"], .sar-actions .next, .sar-actions button');
+      }
+    }
+    if(!done) return;
+
+    // Avoid double-binding
+    if(done.dataset.exp24Bound) return;
+    done.dataset.exp24Bound = '1';
+
+    done.addEventListener('click', function(e){
+      // Always intercept and show our modal; only advance on OK
+      e.preventDefault();
+      openM();
+    });
+  }
+
+  // On OK, proceed to finish using app router if available, else try link/data-nav
+  btnOK && btnOK.addEventListener('click', function(){
+    closeM();
+    // Use app navigation if available
+    try {
+      if(typeof goTo === 'function'){ goTo('finish'); return; }
+    } catch(_) {}
+    // Fallback: simulate click on a next link with data-nav=finish
+    const target = document.querySelector('.sar-actions [data-nav="finish"]');
+    if(target){ target.removeAttribute('data-nav'); target.click(); }
+  });
+
+  // Try to bind immediately and also when hash/step changes
+  attachPeerDone();
+  window.addEventListener('hashchange', attachPeerDone, {passive:true});
+  document.addEventListener('click', function(){ setTimeout(attachPeerDone,0); }, {passive:true});
+})();
+</script>
+
 </body>
 </html>

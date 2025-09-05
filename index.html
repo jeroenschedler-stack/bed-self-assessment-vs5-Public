@@ -170,34 +170,19 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-3{ height:3.6em; }
 
 
-/* === FINISH PAGE (dynamic sizing + perfect centering) === */
-.sar-page[data-step="finish"] > .sar-card {
+/* === FINISH PAGE (final, robust) === */
+.sar-page[data-step="finish"] > .sar-card{
   min-height: calc(100dvh - var(--header-h));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
 }
-.finish-stack-dynamic {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-.finish-stack-dynamic svg {
-  display: block;
-  height: auto;
-}
-.finish-stack-dynamic .finish-text {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-.sar-page[data-step="finish"] .sar-actions {
-  margin-top: 32px;
-}
+.finish-stack-final{ display:flex; flex-direction:column; align-items:center; gap:20px; }
+.finish-stack-final svg{ display:block; height:auto; }
+.finish-text-final{ font-size:28px; font-weight:800; line-height:1.15; }
+.sar-page[data-step="finish"] .sar-actions{ margin-top:32px; }
 
 </style>
 </head>
@@ -348,8 +333,9 @@ p{color:#434343;line-height:1.6;}
      <!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
   <div class="sar-card">
-    <div class="finish-stack-dynamic">
-      <svg id="finishIconDynamic" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <div class="finish-stack-final">
+      <!-- Clean SVG, no inline width/height -->
+      <svg id="finishIconFinal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
         <path d="M7 13L10 16L17 9"
               stroke="white"
@@ -357,9 +343,8 @@ p{color:#434343;line-height:1.6;}
               stroke-linecap="round"
               stroke-linejoin="round"/>
       </svg>
-      <div id="finishTextDynamic" class="finish-text">Congratulations</div>
+      <div id="finishTextFinal" class="finish-text-final">Congratulations</div>
     </div>
-
     <div class="sar-actions">
       <button class="sar-btn" data-nav="goto" data-step="peer">Back</button>
       <button class="sar-btn" id="finishPDF">PDF</button>
@@ -1106,27 +1091,41 @@ ok.onclick = function(){
 
 <script>
 (function(){
-  function resizeFinishIcon(){
-    var text = document.getElementById('finishTextDynamic');
-    var icon = document.getElementById('finishIconDynamic');
-    if(!text || !icon) return;
-    var width = Math.round(text.getBoundingClientRect().width);
-    icon.style.width = width + 'px';
-    icon.style.height = width + 'px';
+  function sizeFinishIcon(){
+    try{
+      var text = document.getElementById('finishTextFinal');
+      var icon = document.getElementById('finishIconFinal');
+      if(!text || !icon) return;
+      var w = Math.round(text.getBoundingClientRect().width);
+      if(!w || w < 80) w = 200; // fallback
+      icon.style.width = w + 'px';
+      icon.style.height = w + 'px';
+    }catch(e){}
   }
 
-  // Hook into navigation
-  var originalGoTo = window.goTo;
+  // Call on load, after fonts, and on resize/orientation.
+  window.addEventListener('load', function(){
+    sizeFinishIcon();
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(sizeFinishIcon); }
+    // Burst to catch late layout shifts (mobile)
+    var t = setInterval(sizeFinishIcon, 120);
+    setTimeout(function(){ clearInterval(t); }, 1800);
+  });
+
+  window.addEventListener('resize', sizeFinishIcon, {passive:true});
+  window.addEventListener('orientationchange', function(){ setTimeout(sizeFinishIcon, 50); }, {passive:true});
+
+  // Integrate with step navigation in the safest way
+  var origGoTo = window.goTo;
   window.goTo = function(step){
-    if(typeof originalGoTo === 'function'){ originalGoTo(step); }
+    if(typeof origGoTo === 'function'){ origGoTo(step); }
     if(step === 'finish'){
-      setTimeout(resizeFinishIcon, 50);
-      setTimeout(resizeFinishIcon, 200);
+      // Size after the page becomes active
+      requestAnimationFrame(sizeFinishIcon);
+      setTimeout(sizeFinishIcon, 60);
+      setTimeout(sizeFinishIcon, 240);
     }
   };
-
-  window.addEventListener('load', resizeFinishIcon);
-  window.addEventListener('resize', resizeFinishIcon);
 })();
 </script>
 

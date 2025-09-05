@@ -240,7 +240,8 @@ p{color:#434343;line-height:1.6;}
         </div>
 
             <div class="sar-gap-3"></div>
-<div class="sar-actions">
+      <div class="sar-gap-3"></div>
+  <div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -321,8 +322,7 @@ p{color:#434343;line-height:1.6;}
   <button id="peerSend" class="sar-btn" type="button">Send</button>
   
 <label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
-  <input id="peerConsent" type="checkbox" style="margin-top:3px;">
- send the review form to my peer<span>I agree to share my self-assessment with my peer</span>
+  <input id="peerConsent" type="checkbox" style="margin-top:3px;"> <span>I agree to share my self-assessment with my peer</span>
 </label>
 
 </div>
@@ -581,7 +581,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
+  if(rawEl) rawEl.textContent = "YOUR SCORE IS " + pct + "%";
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){

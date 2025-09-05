@@ -169,11 +169,6 @@ p{color:#434343;line-height:1.6;}
 .sar-gap-1{ height:1.2em; }
 .sar-gap-3{ height:3.6em; }
 
-
-/* Align subtext to statement text (not the number) */
-.q-title{padding-left:4ch;text-indent:-4ch}
-.q-sub{padding-left:4ch;text-indent:0}
-
 </style>
 
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
@@ -257,7 +252,6 @@ p{color:#434343;line-height:1.6;}
         <div id="q1List" class="q-list" aria-live="polite"></div>
         
     <div class="sar-gap-3"></div>
-<div style="height:0.5em"></div>
 <div class="sar-actions">
           <button class="sar-btn" data-nav="back">Back</button>
           <button id="q1Next" class="sar-btn primary" data-nav="goto" data-step="q2" disabled>Next</button>
@@ -270,7 +264,6 @@ p{color:#434343;line-height:1.6;}
         <div id="q2List" class="q-list" aria-live="polite"></div>
         
     <div class="sar-gap-3"></div>
-<div style="height:0.5em"></div>
 <div class="sar-actions">
           <button class="sar-btn" data-nav="back">Back</button>
           <button id="q2Next" class="sar-btn primary" data-nav="next" disabled>Next</button>
@@ -280,11 +273,13 @@ p{color:#434343;line-height:1.6;}
       <!-- Placeholders -->
       <div class="sar-page" data-step="score">
   
-  <div class="score-gap" aria-hidden="true"><br><br><br><br></div>
+  
+  <div class="sar-title" style="display:none">your assessment results</div>
+<div class="score-gap" aria-hidden="true"><br><br><br><br></div>
   <div class="score-wrap">
     <div class="score-values">
       <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE 0/100</div>
+      <div class="score-raw" id="scoreNumber">YOUR SCORE is 0%</div>
     </div>
     <div class="scorebar-wrap" aria-label="Score on color bar">
       <div class="scorebar" id="scoreBar">
@@ -589,7 +584,7 @@ function renderScore(){
   const pct = total ? Math.round((sum / total) * 100) : 0;
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
-  if(rawEl) rawEl.textContent = "YOUR SCORE " + (sum + "/" + total);
+  if(rawEl) rawEl.textContent = "YOUR SCORE is " + pct + "%";
   if(bandEl) bandEl.innerHTML = scoreBand(pct);
   const marker = page.querySelector('#scoreMarker');
   if(marker){
@@ -739,7 +734,7 @@ function updateHeaderTitle(){
   if(activeTitle){ text = activeTitle.textContent.trim(); }
   const step = sarState.step;
   if(!text){
-    const map = {welcome:'SELF-ASSESSMENT REPORT (SAR)', q1:'Statements 1-16', q2:'Statements 17-32', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
+    const map = {welcome:'SELF-ASSESSMENT REPORT (SAR)', q1:'STATEMENTS PART 1', q2:'STATEMENTS PART 2', score:'SELF-ASSESSMENT SCORE', peer:'PEER ASSESSMENT', done:'YOU\'RE DONE', finish:'SELF- ASSESSMENT COMPLETED'
 };
     text = map[step] || '';
   }

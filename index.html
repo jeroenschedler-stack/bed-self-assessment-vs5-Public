@@ -983,5 +983,62 @@ ok.onclick = function(){
 })();
 </script>
 
+
+<!-- Peer page tidy-up: place consent under hotels, rename Send->Done, enable when valid -->
+<script>
+(function(){
+  function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
+
+  function runPeerFix(){
+    var page = document.querySelector('.sar-page[data-step="peer"]') || document.querySelector('[data-step="peer"]');
+    if(!page) return;
+
+    var nameEl  = document.getElementById('peerName');
+    var emailEl = document.getElementById('peerEmail');
+    var consent = document.getElementById('peerConsent');
+    var nextBtn = document.getElementById('peerNext');
+    var sendBtn = document.getElementById('peerSend');
+    var action  = sendBtn || nextBtn;
+    if(!action) return;
+
+    // 1) Move consent just above actions row (i.e., under hotels)
+    if(consent){
+      var label = consent.closest('label');
+      var actions = action.closest('.sar-actions') || action.parentElement;
+      if(label && actions && label.nextSibling !== actions){
+        actions.parentNode.insertBefore(label, actions);
+      }
+    }
+
+    // 2) Rename Send -> Done (visual text only)
+    if(sendBtn && /send/i.test(sendBtn.textContent.trim())){
+      sendBtn.textContent = 'Done';
+    }
+
+    // 3) Validate -> enable/disable + visual state (blue when enabled)
+    function validate(){
+      var ok = !!(nameEl && (nameEl.value||'').trim())
+            && !!(emailEl && emailOK(emailEl.value))
+            && !!(consent && consent.checked);
+      action.disabled = !ok;
+      // Use your existing primary style for blue buttons
+      if(action.classList){
+        if(action.disabled){ action.classList.remove('primary'); }
+        else { action.classList.add('primary'); }
+      }
+    }
+    nameEl  && nameEl.addEventListener('input', validate);
+    emailEl && emailEl.addEventListener('input', validate);
+    consent && consent.addEventListener('change', validate);
+    validate();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', runPeerFix, {once:true});
+  } else { runPeerFix(); }
+  window.addEventListener('hashchange', function(){ setTimeout(runPeerFix, 0); }, {passive:true});
+})();
+</script>
+
 </body>
 </html>

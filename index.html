@@ -1088,6 +1088,54 @@ ok.onclick = function(){
   } else { runPeerFix(); }
   window.addEventListener('hashchange', function(){ setTimeout(runPeerFix, 0); }, {passive:true});
 })();
+
+// --- Welcome page robust binder (fallback) ---
+(function(){
+  function bindWelcomeFallback(){
+    try{
+      const card = document.querySelector('.sar-page[data-step="welcome"]');
+      if(!card) return;
+      const nick = card.querySelector('#sarNick');
+      const email = card.querySelector('#sarEmail');
+      const startBtn = card.querySelector('#sarStart');
+      if(!window.sarState) window.sarState = { user:{}, answers:{}, questions:[], step:'welcome' };
+      if(!window.sarState.user) window.sarState.user = {};
+
+      // Delegate for hotel buttons
+      card.addEventListener('click', function(e){
+        const btn = e.target.closest('.sar-hotel');
+        if(!btn) return;
+        card.querySelectorAll('.sar-hotel').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        window.sarState.user.hotel = btn.getAttribute('data-hotel') || "";
+        if(typeof validateWelcome==='function') validateWelcome();
+      }, {capture:false});
+
+      if(nick){
+        nick.addEventListener('input', function(){
+          window.sarState.user.nickname = (nick.value||"").trim();
+          if(typeof validateWelcome==='function') validateWelcome();
+        });
+      }
+      if(email){
+        email.addEventListener('input', function(){
+          window.sarState.user.email = (email.value||"").trim();
+          if(typeof validateWelcome==='function') validateWelcome();
+        });
+      }
+      if(startBtn){
+        startBtn.addEventListener('click', function(e){
+          if(startBtn.disabled){ e.preventDefault(); e.stopPropagation(); }
+        });
+      }
+    }catch(_){/*noop*/}
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', bindWelcomeFallback, {once:true});
+  } else { bindWelcomeFallback(); }
+  window.addEventListener('pageshow', bindWelcomeFallback, {once:true});
+})();
+
 </script>
 
 </body>

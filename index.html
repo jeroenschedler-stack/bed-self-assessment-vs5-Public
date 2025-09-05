@@ -227,7 +227,17 @@ p{color:#434343;line-height:1.6;}
 
             <div class="sar-gap-3"></div>
       <div class="sar-gap-3"></div>
-  <div class="sar-actions">
+  
+  <!-- 24-month experience confirmation -->
+  <div class="sar-row" style="margin:8px 0 12px">
+    <label class="sar-check" style="display:flex;gap:10px;align-items:flex-start">
+      <input id="peerExp24" type="checkbox" style="margin-top:4px">
+      <span class="sar-label" style="font-size:14px;line-height:1.2">
+        I confirm this peer has at least 24 months of BED experience
+      </span>
+    </label>
+  </div>
+<div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -573,7 +583,19 @@ function renderScore(){
 }
 let peerBound = false;
 function ensurePeerBindings(){
-  if(peerBound){ validatePeer(); return; }
+  if(peerBound){ 
+  // 24-month checkbox binding
+  const expEl = card.querySelector('#peerExp24');
+  if(expEl){
+    // initialize from state
+    if(sarState.peer && sarState.peer.confirm24){ expEl.checked = true; }
+    expEl.addEventListener('change', function(){
+      sarState.peer = sarState.peer || {};
+      sarState.peer.confirm24 = !!expEl.checked;
+      validatePeer();
+    });
+  }
+  validatePeer(); return; }
   peerBound = true;
   const card = document.querySelector('.sar-page[data-step="peer"]');
   if(!card) return;
@@ -597,18 +619,7 @@ function ensurePeerBindings(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.confirm24)){
-        var ok = confirm('your peer has 24 months experience?');
-        if(!ok){
-          e.preventDefault();
-          alert('Please confirm YES to continue.');
-          return;
-        }
-        sarState.peer = sarState.peer || {};
-        sarState.peer.confirm24 = true;
-        validatePeer();
-        goTo('finish');
-      }
+      if(!(sarState.peer && sarState.peer.confirm24)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
     });
   }
   const shareBtn = card.querySelector('#peerShare');
@@ -619,7 +630,19 @@ card.addEventListener('click',(e)=>{
     btn.classList.add('selected');
     sarState.peer = sarState.peer || {name:'',email:'',hotel:''};
     sarState.peer.hotel = btn.getAttribute('data-hotel') || "";
-    validatePeer();
+    
+  // 24-month checkbox binding
+  const expEl = card.querySelector('#peerExp24');
+  if(expEl){
+    // initialize from state
+    if(sarState.peer && sarState.peer.confirm24){ expEl.checked = true; }
+    expEl.addEventListener('change', function(){
+      sarState.peer = sarState.peer || {};
+      sarState.peer.confirm24 = !!expEl.checked;
+      validatePeer();
+    });
+  }
+  validatePeer();
   });
   if(nameEl) nameEl.addEventListener('input', ()=>{ sarState.peer = sarState.peer || {}; sarState.peer.name = nameEl.value.trim(); validatePeer(); });
   if(emailEl) emailEl.addEventListener('input', ()=>{ sarState.peer = sarState.peer || {}; sarState.peer.email = emailEl.value.trim(); validatePeer(); });
@@ -686,24 +709,13 @@ function validatePeer(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.confirm24)){
-        var ok = confirm('your peer has 24 months experience?');
-        if(!ok){
-          e.preventDefault();
-          alert('Please confirm YES to continue.');
-          return;
-        }
-        sarState.peer = sarState.peer || {};
-        sarState.peer.confirm24 = true;
-        validatePeer();
-        goTo('finish');
-      }
+      if(!(sarState.peer && sarState.peer.confirm24)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
     });
   }
   const hasName = (nameEl?.value || "").trim().length > 0;
   const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((emailEl?.value || "").trim());
   const hasHotel = !!(sarState.peer && sarState.peer.hotel);
-  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel);
+  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel && (sarState.peer && sarState.peer.confirm24));
 }
 function updateHeaderTitle(){
   const slot = document.getElementById('sarPageTitle');
@@ -748,46 +760,5 @@ function downloadSarResults(){
 }
 
 </script>
-
-<script>
-// One-time 24-month experience confirmation before proceeding to Finish
-(function(){
-  const peerNext = document.getElementById('peerNext'); // the "Done" button
-  if (!peerNext) return;
-
-  // Persist in memory so the user isn't asked again after confirming once
-  window.sarState = window.sarState || {};
-  if (!('peer' in sarState)) sarState.peer = {};
-
-  function ensure24MonthConfirmation(e){
-    // Guard: only ask if not already confirmed
-    if (!sarState.peer.confirm24){
-      const ok = confirm('Does your peer have at least 24 months of BED experience?');
-      if (!ok){
-        e && e.preventDefault();
-        alert('Please choose a peer with at least 24 months experience.');
-        return false;
-      }
-      sarState.peer.confirm24 = true; // remember
-    }
-    return true;
-  }
-
-  // Hook the "Done" button
-  peerNext.addEventListener('click', function(e){
-    // If the confirmation fails or is canceled, block navigation
-    if (!ensure24MonthConfirmation(e)) return;
-    // Otherwise, let your existing navigation proceed (data-nav / router)
-  });
-
-  // Optional hygiene: if user edits peer fields, clear the confirmation
-  const nameEl  = document.getElementById('peerName');
-  const emailEl = document.getElementById('peerEmail');
-  function clearConfirm(){ if (sarState.peer) sarState.peer.confirm24 = false; }
-  nameEl  && nameEl.addEventListener('input', clearConfirm);
-  emailEl && emailEl.addEventListener('input', clearConfirm);
-})();
-</script>
-
 </body>
 </html>

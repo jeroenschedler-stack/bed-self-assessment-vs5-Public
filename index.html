@@ -226,7 +226,8 @@ p{color:#434343;line-height:1.6;}
         </div>
 
             <div class="sar-gap-3"></div>
-      <div class="sar-gap-3"></div><div class="sar-actions">
+      <div class="sar-gap-3"></div>
+  <div class="sar-actions">
           <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
         </div>
       </div>
@@ -572,68 +573,7 @@ function renderScore(){
 }
 let peerBound = false;
 function ensurePeerBindings(){
-
-  // Bind controls inside the Peer page
-  const card = document.querySelector('.sar-page[data-step="peer"]');
-  if(!card) return;
-  if(card.dataset.bound === '1') return;
-  card.dataset.bound = '1';
-
-  window.sarState = window.sarState || {};
-  sarState.peer = sarState.peer || {};
-
-  const nameEl  = card.querySelector('#peerName');
-  const emailEl = card.querySelector('#peerEmail');
-  const nextBtn = card.querySelector('#peerNext');
-  const backBtn = card.querySelector('#peerBack');
-  const hotelBtns = card.querySelectorAll('.sar-hotels button, .sar-hotels .sar-btn, .sar-hotels [data-hotel]');
-
-  function setHotel(h){
-    sarState.peer.hotel = h;
-    // visual active state (best-effort)
-    hotelBtns.forEach(b => {
-      const label = (b.dataset && b.dataset.hotel) ? b.dataset.hotel : (b.textContent || '').trim();
-      if(b.classList){
-        b.classList.toggle('active', label === h);
-      }
-    });
-    validatePeer();
-  }
-
-  hotelBtns.forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const h = (btn.dataset && btn.dataset.hotel) ? btn.dataset.hotel : (btn.textContent || '').trim();
-      if(h) setHotel(h);
-    });
-  });
-
-  function onInput(){
-    sarState.peer.name  = (nameEl && nameEl.value || '').trim();
-    sarState.peer.email = (emailEl && emailEl.value || '').trim();
-    validatePeer();
-  }
-  nameEl  && nameEl.addEventListener('input', onInput);
-  emailEl && emailEl.addEventListener('input', onInput);
-
-  validatePeer();
-
-}
-  }
-
-  if(peerBound){ 
-  // 24-month checkbox binding
-  const expEl = card.querySelector('#peerExp24_removed');
-  if(expEl){
-    // initialize from state
-    if(sarState.peer && sarState.peer.__no_confirm__){ expEl.checked = true; }
-    expEl.addEventListener('change', function(){
-      sarState.peer = sarState.peer || {};
-      sarState.peer.__no_confirm__ = !!expEl.checked;
-      validatePeer();
-    });
-  }
-  validatePeer(); return; }
+  if(peerBound){ validatePeer(); return; }
   peerBound = true;
   const card = document.querySelector('.sar-page[data-step="peer"]');
   if(!card) return;
@@ -657,7 +597,18 @@ function ensurePeerBindings(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.__no_confirm__)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
+      if(!(sarState.peer && sarState.peer.confirm24)){
+        var ok = confirm('your peer has 24 months experience?');
+        if(!ok){
+          e.preventDefault();
+          alert('Please confirm YES to continue.');
+          return;
+        }
+        sarState.peer = sarState.peer || {};
+        sarState.peer.confirm24 = true;
+        validatePeer();
+        goTo('finish');
+      }
     });
   }
   const shareBtn = card.querySelector('#peerShare');
@@ -668,19 +619,7 @@ card.addEventListener('click',(e)=>{
     btn.classList.add('selected');
     sarState.peer = sarState.peer || {name:'',email:'',hotel:''};
     sarState.peer.hotel = btn.getAttribute('data-hotel') || "";
-    
-  // 24-month checkbox binding
-  const expEl = card.querySelector('#peerExp24_removed');
-  if(expEl){
-    // initialize from state
-    if(sarState.peer && sarState.peer.__no_confirm__){ expEl.checked = true; }
-    expEl.addEventListener('change', function(){
-      sarState.peer = sarState.peer || {};
-      sarState.peer.__no_confirm__ = !!expEl.checked;
-      validatePeer();
-    });
-  }
-  validatePeer();
+    validatePeer();
   });
   if(nameEl) nameEl.addEventListener('input', ()=>{ sarState.peer = sarState.peer || {}; sarState.peer.name = nameEl.value.trim(); validatePeer(); });
   if(emailEl) emailEl.addEventListener('input', ()=>{ sarState.peer = sarState.peer || {}; sarState.peer.email = emailEl.value.trim(); validatePeer(); });
@@ -702,7 +641,7 @@ card.addEventListener('click',(e)=>{
         return;
       }
       sarState.peer = sarState.peer || {};
-      sarState.peer.__no_confirm__ = true;
+      sarState.peer.confirm24 = true;
       validatePeer();
     });
   }
@@ -723,26 +662,22 @@ card.addEventListener('click',(e)=>{
         return;
       }
       sarState.peer = sarState.peer || {};
-      sarState.peer.__no_confirm__ = true;
+      sarState.peer.confirm24 = true;
       validatePeer();
     });
   }
   validatePeer();
 }
 function validatePeer(){
-
   const card = document.querySelector('.sar-page[data-step="peer"]');
   if(!card) return;
-  const nameEl  = card.querySelector('#peerName');
+  const nameEl = card.querySelector('#peerName');
   const emailEl = card.querySelector('#peerEmail');
   const nextBtn = card.querySelector('#peerNext');
 
-  const hasName  = ((nameEl && nameEl.value)  || '').trim().length > 0;
-  const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(((emailEl && emailEl.value) || '').trim());
-  const hasHotel = !!(window.sarState && sarState.peer && sarState.peer.hotel);
-  if(nextBtn) nextBtn.disabled = !(hasName && hasEmail && hasHotel);
-
-}
+  if(nextBtn){
+    nextBtn.addEventListener('click', function(e){
+      if(nextBtn.disabled){ e.preventDefault(); return; }
       var hasName = (nameEl && nameEl.value || "").trim().length > 0;
       var hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((emailEl && emailEl.value || "").trim());
       var hasHotel = !!(sarState.peer && sarState.peer.hotel);
@@ -751,7 +686,18 @@ function validatePeer(){
         alert('Please fill peer nick name, email address, and select a hotel.');
         return;
       }
-      if(!(sarState.peer && sarState.peer.__no_confirm__)){ e.preventDefault(); alert('Please tick the 24‑month experience box.'); return; } goTo('finish');
+      if(!(sarState.peer && sarState.peer.confirm24)){
+        var ok = confirm('your peer has 24 months experience?');
+        if(!ok){
+          e.preventDefault();
+          alert('Please confirm YES to continue.');
+          return;
+        }
+        sarState.peer = sarState.peer || {};
+        sarState.peer.confirm24 = true;
+        validatePeer();
+        goTo('finish');
+      }
     });
   }
   const hasName = (nameEl?.value || "").trim().length > 0;
@@ -803,77 +749,38 @@ function downloadSarResults(){
 
 </script>
 
-<style>
-  .exp24-mask{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:9998;}
-  .exp24-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;max-width:92vw;background:#fff;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);display:none;z-index:9999;font-family:inherit;}
-  .exp24-modal .hd{padding:14px 16px;border-bottom:1px solid #eee;font-weight:600;}
-  .exp24-modal .bd{padding:16px;font-size:15px;line-height:1.35;}
-  .exp24-modal .ft{padding:12px 16px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eee;}
-  .exp24-btn{border:none;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
-  .exp24-btn.primary{background:#1E90FF;color:#fff}
-  .exp24-btn.ghost{background:#f2f4f7}
-</style>
-<div id="exp24Mask" class="exp24-mask"></div>
-<div id="exp24Modal" class="exp24-modal" role="dialog" aria-modal="true" aria-labelledby="exp24Hd">
-  <div class="hd" id="exp24Hd">Peer eligibility</div>
-  <div class="bd">Does your peer have at least 24 months of BED experience?</div>
-  <div class="ft">
-    <button id="exp24Cancel" class="exp24-btn ghost" type="button">Cancel</button>
-    <button id="exp24OK" class="exp24-btn primary" type="button">OK</button>
-  </div>
-</div>
+<!-- 24-month experience confirmation -->
 <script>
 (function(){
-  // Helpers to open/close the modal
-  const mask  = document.getElementById('exp24Mask');
-  const modal = document.getElementById('exp24Modal');
-  const btnOK = document.getElementById('exp24OK');
-  const btnNO = document.getElementById('exp24Cancel');
-  function openM(){ mask.style.display='block'; modal.style.display='block'; }
-  function closeM(){ mask.style.display='none'; modal.style.display='none'; }
-  mask && mask.addEventListener('click', closeM);
-  btnNO && btnNO.addEventListener('click', closeM);
+  const peerNext = document.getElementById('peerNext'); // the "Done" button
+  if (!peerNext) return;
 
-  // Attach once when Peer page is active
-  function attachPeerDone(){
-    // Prefer explicit id if present
-    let done = document.getElementById('peerNext');
-    // Fallback: find a button that navigates to finish inside the active peer card
-    if(!done){
-      const peerCard = document.querySelector('.sar-page.active, .sar-card.active, .sar-page.peer, [data-step="peer"]');
-      if(peerCard){
-        done = peerCard.querySelector('.sar-actions [data-nav="finish"], .sar-actions .next, .sar-actions button');
+  window.sarState = window.sarState || {};
+  if (!('peer' in sarState)) sarState.peer = {};
+
+  function ensure24MonthConfirmation(e){
+    if (!sarState.peer.confirm24){
+      const ok = confirm('Does your peer have at least 24 months of BED experience?');
+      if (!ok){
+        e && e.preventDefault();
+        alert('Please choose a peer with at least 24 months experience.');
+        return false;
       }
+      sarState.peer.confirm24 = true;
     }
-    if(!done) return;
-
-    // Avoid double-binding
-    if(done.dataset.exp24Bound) return;
-    done.dataset.exp24Bound = '1';
-
-    done.addEventListener('click', function(e){
-      // Always intercept and show our modal; only advance on OK
-      e.preventDefault();
-      openM();
-    });
+    return true;
   }
 
-  // On OK, proceed to finish using app router if available, else try link/data-nav
-  btnOK && btnOK.addEventListener('click', function(){
-    closeM();
-    // Use app navigation if available
-    try {
-      if(typeof goTo === 'function'){ goTo('finish'); return; }
-    } catch(_) {}
-    // Fallback: simulate click on a next link with data-nav=finish
-    const target = document.querySelector('.sar-actions [data-nav="finish"]');
-    if(target){ target.removeAttribute('data-nav'); target.click(); }
+  peerNext.addEventListener('click', function(e){
+    if (!ensure24MonthConfirmation(e)) return;
+    // Let existing navigation proceed
   });
 
-  // Try to bind immediately and also when hash/step changes
-  attachPeerDone();
-  window.addEventListener('hashchange', attachPeerDone, {passive:true});
-  document.addEventListener('click', function(){ setTimeout(attachPeerDone,0); }, {passive:true});
+  const nameEl  = document.getElementById('peerName');
+  const emailEl = document.getElementById('peerEmail');
+  function clearConfirm(){ if (sarState.peer) sarState.peer.confirm24 = false; }
+  nameEl  && nameEl.addEventListener('input', clearConfirm);
+  emailEl && emailEl.addEventListener('input', clearConfirm);
 })();
 </script>
 

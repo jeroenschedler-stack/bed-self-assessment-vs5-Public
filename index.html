@@ -1,16 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BED Hospitality — Self-Assessment (SAR)</title>
-  <meta name="theme-color" content="#1E90FF" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="%231E90FF"/><text x="50%" y="56%" font-size="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" text-anchor="middle" fill="white">BED</text></svg>'>
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>BED Hospitality — Self-Assessment (SAR)</title>
+<meta content="#1E90FF" name="theme-color"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href='data:image/svg+xml,&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" rx="12" fill="%231E90FF"/&gt;&lt;text x="50%" y="56%" font-size="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" text-anchor="middle" fill="white"&gt;BED&lt;/text&gt;&lt;/svg&gt;' rel="icon"/>
+<style>
     :root{
       --brand:#1E90FF;
       --border:#E5E7EB;
@@ -174,7 +174,6 @@ p{color:#434343;line-height:1.6;}
 .sar-page[data-step="welcome"] .sar-scale + .sar-gap-3 { display:none !important; }
 
 </style>
-
 <!-- EmailJS SDK (Option 2: automatic email sending) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
@@ -187,198 +186,165 @@ p{color:#434343;line-height:1.6;}
     emailjs.init(window.EMAILJS_PUBLIC_KEY);
   }
 </script>
-
 </head>
 <body>
-
-  <!-- Header -->
-  <header class="sar-header">
-    <div class="sar-logo-wrap">
-      <div class="sar-logo">BED HOSPITALITY 2.0</div>
-      <div class="sar-page-title" id="sarPageTitle" aria-live="polite"></div>
-      <div class="sar-dotbar" id="dotbar" aria-label="Progress"></div>
-      <!-- Global progress bar inside header -->
-      <div class="global-progress" id="gprog" aria-hidden="true"><span id="gprogFill"></span></div>
-    </div>
-  </header>
-
-  <main class="sar-wrap">
-    <section class="sar-card">
-
-      <!-- Welcome -->
-      <div class="sar-page" data-step="welcome">
-        <div style="max-width:75%">
-          
-        </div>
-
-        <div class="sar-row sar-row-fields" style="margin-bottom:12px">
-          <label class="sar-field">
-            <span class="sar-label">your nickname</span>
-            <input id="sarNick" type="text" class="sar-input" inputmode="text" autocomplete="nickname" />
-          </label>
-          <label class="sar-field">
-            <span class="sar-label">your email</span>
-            <input id="sarEmail" type="email" class="sar-input" inputmode="email" autocomplete="email" />
-          </label>
-        </div>
-
-        <div class="sar-row sar-hotels" role="group" aria-label="Choose your BED Hotel" style="margin-bottom:12px">
-                  <button class="sar-btn sar-hotel" data-hotel="BCK">BCK</button>
-    <button class="sar-btn sar-hotel" data-hotel="BPS">BPS</button>
-    <button class="sar-btn sar-hotel" data-hotel="BNM">BNM</button>
-    <button class="sar-btn sar-hotel" data-hotel="BCG">BCG</button>
-    <button class="sar-btn sar-hotel" data-hotel="FLY">FLY</button>
-    <button class="sar-btn sar-hotel" data-hotel="BED">BED</button>
+<!-- Header -->
+<header class="sar-header">
+<div class="sar-logo-wrap">
+<div class="sar-logo">BED HOSPITALITY 2.0</div>
+<div aria-live="polite" class="sar-page-title" id="sarPageTitle"></div>
+<div aria-label="Progress" class="sar-dotbar" id="dotbar"></div>
+<!-- Global progress bar inside header -->
+<div aria-hidden="true" class="global-progress" id="gprog"><span id="gprogFill"></span></div>
 </div>
-
-        <div class="sar-intro" style="margin-bottom:8px">
-          <p>Self-assessment helps your personal growth and development. Read each statement and think how you act in these situations. Then select the rating that best fits you. Be honest with yourself. The goal is to know your own strengths and opportunities.</p>
-        </div>
-
-        <div class="sar-scale" style="margin-bottom:8px">
-          <div class="sar-scale-row"><span class="sar-badge">1</span><span>I'm not good at this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">2</span><span>I can do better in this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">3</span><span>I'm good at this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">4</span><span>I'm great at this</span></div>
-          <div class="sar-scale-row"><span class="sar-badge">5</span><span>I'm excellent at this</span></div>
-        </div>
-
-            <div class="sar-gap-3"></div>
-      <div class="sar-gap-3"></div>
-  <div class="sar-actions">
-          <button id="sarStart" class="sar-btn primary" data-nav="goto" data-step="q1" disabled>start</button>
-        </div>
-      </div>
-
-      <!-- Part 1 — Dynamic questions -->
-      <div class="sar-page" data-step="q1">
-<!-- removed page-level thin progress bar (now in header) -->
-        <div id="q1List" class="q-list" aria-live="polite"></div>
-        
-    <div class="sar-gap-3"></div>
-<div class="sar-actions">
-          <button class="sar-btn" data-nav="back">Back</button>
-          <button id="q1Next" class="sar-btn primary" data-nav="goto" data-step="q2" disabled>Next</button>
-        </div>
-      </div>
-
-      <!-- Part 2 — Dynamic questions -->
-      <div class="sar-page" data-step="q2">
-<!-- removed page-level thin progress bar (now in header) -->
-        <div id="q2List" class="q-list" aria-live="polite"></div>
-        
-    <div class="sar-gap-3"></div>
-<div class="sar-actions">
-          <button class="sar-btn" data-nav="back">Back</button>
-          <button id="q2Next" class="sar-btn primary" data-nav="next" disabled>Next</button>
-        </div>
-      </div>
-
-      <!-- Placeholders -->
-      <div class="sar-page" data-step="score">
-  
-  <div class="score-gap" aria-hidden="true"><br><br><br><br></div>
-  <div class="score-wrap">
-    <div class="score-values">
-      <div class="score-label">your self assessment results</div>
-      <div class="score-raw" id="scoreNumber">YOUR SCORE IS 0%</div>
-    </div>
-    <div class="scorebar-wrap" aria-label="Score on color bar">
-      <div class="scorebar" id="scoreBar">
-        <span class="score-marker" id="scoreMarker" title="Your score"></span>
-      </div>
-    </div>
-    <div class="score-label">our suggestion and recommendation</div>
-    
-    <div class="score-band" id="scoreBandText">—</div>
-  </div>
-  <div class="score-spacer"><br><br><br><br></div>
-  <div class="sar-actions">
-    <button class="sar-btn" data-nav="back">Back</button>
-    <button class="sar-btn primary" data-nav="next">Next</button>
-  </div>
+</header>
+<main class="sar-wrap">
+<section class="sar-card">
+<!-- Welcome -->
+<div class="sar-page" data-step="welcome">
+<div style="max-width:75%">
 </div>
-      <div class="sar-page" data-step="peer">
-  
-    <div class="sar-gap-1"></div>
-  <div class="sar-para-title">FIND YOUR PEER REVIEWER</div>
-  <div class="sar-intro" style="margin-bottom:12px"><p>You completed your self-assessment. The next step is peer review. Ask anyone in your team who has been in BED for at least 24 months to assess you. When they accept complete the information. When you click Done the review form is send to your peer</p></div>
-  <div class="sar-gap-1"></div>
-  <div class="sar-row sar-row-fields" style="margin-bottom:12px">
-    <label class="sar-field">
-      <span class="sar-label">peer nick name</span>
-      <input id="peerName" type="text" class="sar-input" inputmode="text" />
-    </label>
-    <label class="sar-field">
-      <span class="sar-label">peer email address</span>
-      <input id="peerEmail" type="email" class="sar-input" inputmode="email" autocomplete="email" />
-    </label>
-  </div>
-  <div class="sar-row sar-hotels" role="group" aria-label="Choose peer's BED Hotel" style="margin-bottom:12px">
-    <button class="sar-btn sar-hotel" data-hotel="BCK">BCK</button>
-    <button class="sar-btn sar-hotel" data-hotel="BPS">BPS</button>
-    <button class="sar-btn sar-hotel" data-hotel="BNM">BNM</button>
-    <button class="sar-btn sar-hotel" data-hotel="BCG">BCG</button>
-    <button class="sar-btn sar-hotel" data-hotel="FLY">FLY</button>
-    <button class="sar-btn sar-hotel" data-hotel="BED">BED</button>
-  </div>
-  <div class="sar-actions"><button class="sar-btn" data-nav="back">Back</button>
-  <button id="peerSend" class="sar-btn" type="button">Send</button>
-  
-<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
-  <input id="peerConsent" type="checkbox" style="margin-top:3px;">
- <span>I agree to share my self-assessment with my peer</span>
+<div class="sar-row sar-row-fields" style="margin-bottom:12px">
+<label class="sar-field">
+<span class="sar-label">your nickname</span>
+<input autocomplete="nickname" class="sar-input" id="sarNick" inputmode="text" type="text"/>
 </label>
-
+<label class="sar-field">
+<span class="sar-label">your email</span>
+<input autocomplete="email" class="sar-input" id="sarEmail" inputmode="email" type="email"/>
+</label>
+</div>
+<div aria-label="Choose your BED Hotel" class="sar-row sar-hotels" role="group" style="margin-bottom:12px">
+<button class="sar-btn sar-hotel" data-hotel="BCK">BCK</button>
+<button class="sar-btn sar-hotel" data-hotel="BPS">BPS</button>
+<button class="sar-btn sar-hotel" data-hotel="BNM">BNM</button>
+<button class="sar-btn sar-hotel" data-hotel="BCG">BCG</button>
+<button class="sar-btn sar-hotel" data-hotel="FLY">FLY</button>
+<button class="sar-btn sar-hotel" data-hotel="BED">BED</button>
+</div>
+<div class="sar-intro" style="margin-bottom:8px">
+<p>Self-assessment helps your personal growth and development. Read each statement and think how you act in these situations. Then select the rating that best fits you. Be honest with yourself. The goal is to know your own strengths and opportunities.</p>
+</div>
+<div class="sar-scale" style="margin-bottom:8px">
+<div class="sar-scale-row"><span class="sar-badge">1</span><span>I'm not good at this</span></div>
+<div class="sar-scale-row"><span class="sar-badge">2</span><span>I can do better in this</span></div>
+<div class="sar-scale-row"><span class="sar-badge">3</span><span>I'm good at this</span></div>
+<div class="sar-scale-row"><span class="sar-badge">4</span><span>I'm great at this</span></div>
+<div class="sar-scale-row"><span class="sar-badge">5</span><span>I'm excellent at this</span></div>
+</div>
+<div class="sar-gap-3"></div>
+<div class="sar-gap-3"></div>
+<div class="sar-actions">
+<button class="sar-btn primary" data-nav="goto" data-step="q1" disabled="" id="sarStart">start</button>
 </div>
 </div>
-      <div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
-     <!-- FINISH PAGE -->
+<!-- Part 1 — Dynamic questions -->
+<div class="sar-page" data-step="q1">
+<!-- removed page-level thin progress bar (now in header) -->
+<div aria-live="polite" class="q-list" id="q1List"></div>
+<div class="sar-gap-3"></div>
+<div class="sar-actions">
+<button class="sar-btn" data-nav="back">Back</button>
+<button class="sar-btn primary" data-nav="goto" data-step="q2" disabled="" id="q1Next">Next</button>
+</div>
+</div>
+<!-- Part 2 — Dynamic questions -->
+<div class="sar-page" data-step="q2">
+<!-- removed page-level thin progress bar (now in header) -->
+<div aria-live="polite" class="q-list" id="q2List"></div>
+<div class="sar-gap-3"></div>
+<div class="sar-actions">
+<button class="sar-btn" data-nav="back">Back</button>
+<button class="sar-btn primary" data-nav="next" disabled="" id="q2Next">Next</button>
+</div>
+</div>
+<!-- Placeholders -->
+<div class="sar-page" data-step="score">
+<div aria-hidden="true" class="score-gap"><br/><br/><br/><br/></div>
+<div class="score-wrap">
+<div class="score-values">
+<div class="score-label">your self assessment results</div>
+<div class="score-raw" id="scoreNumber">YOUR SCORE IS 0%</div>
+</div>
+<div aria-label="Score on color bar" class="scorebar-wrap">
+<div class="scorebar" id="scoreBar">
+<span class="score-marker" id="scoreMarker" title="Your score"></span>
+</div>
+</div>
+<div class="score-label">our suggestion and recommendation</div>
+<div class="score-band" id="scoreBandText">—</div>
+</div>
+<div class="score-spacer"><br/><br/><br/><br/></div>
+<div class="sar-actions">
+<button class="sar-btn" data-nav="back">Back</button>
+<button class="sar-btn primary" data-nav="next">Next</button>
+</div>
+</div>
+<div class="sar-page" data-step="peer">
+<div class="sar-gap-1"></div>
+<div class="sar-para-title">FIND YOUR PEER REVIEWER</div>
+<div class="sar-intro" style="margin-bottom:12px"><p>You completed your self-assessment. The next step is peer review. Ask anyone in your team who has been in BED for at least 24 months to assess you. When they accept complete the information. When you click Done the review form is send to your peer</p></div>
+<div class="sar-gap-1"></div>
+<div class="sar-row sar-row-fields" style="margin-bottom:12px">
+<label class="sar-field">
+<span class="sar-label">peer nick name</span>
+<input class="sar-input" id="peerName" inputmode="text" type="text"/>
+</label>
+<label class="sar-field">
+<span class="sar-label">peer email address</span>
+<input autocomplete="email" class="sar-input" id="peerEmail" inputmode="email" type="email"/>
+</label>
+</div>
+<div aria-label="Choose peer's BED Hotel" class="sar-row sar-hotels" role="group" style="margin-bottom:12px">
+<button class="sar-btn sar-hotel" data-hotel="BCK">BCK</button>
+<button class="sar-btn sar-hotel" data-hotel="BPS">BPS</button>
+<button class="sar-btn sar-hotel" data-hotel="BNM">BNM</button>
+<button class="sar-btn sar-hotel" data-hotel="BCG">BCG</button>
+<button class="sar-btn sar-hotel" data-hotel="FLY">FLY</button>
+<button class="sar-btn sar-hotel" data-hotel="BED">BED</button>
+</div>
+<div class="sar-actions"><button class="sar-btn" data-nav="back">Back</button>
+<button class="sar-btn" id="peerSend" type="button">Send</button>
+<label class="sar-check" style="display:flex;gap:8px;align-items:flex-start;line-height:1.3;margin:10px 0; font-size:14px; font-family:inherit;">
+<input id="peerConsent" style="margin-top:3px;" type="checkbox"/>
+<span>I agree to share my self-assessment with my peer</span>
+</label>
+</div>
+</div>
+<div class="sar-page" data-step="done"><div class="sar-title">Done</div></div>
+<!-- FINISH PAGE -->
 <div class="sar-page" data-step="finish">
-  <div class="sar-card">
-    <div class="sar-gap-1"></div>
-
-    <!-- Centered blue checkmark image -->
-    <div class="finish-hero" aria-hidden="true">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-     style="width: 120px; height: 120px; display: block; background-color: #1E90FF;
-            border-radius: 50%; padding: 16px; box-sizing: border-box;">
-  <circle cx="12" cy="12" r="12" fill="#1E90FF"/>
-  <path d="M7 13L10 16L17 9"
-        stroke="white"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+<div class="sar-card">
+<div class="sar-gap-1"></div>
+<!-- Centered blue checkmark image -->
+<div aria-hidden="true" class="finish-hero">
+<svg style="width: 120px; height: 120px; display: block; background-color: #1E90FF;
+            border-radius: 50%; padding: 16px; box-sizing: border-box;" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" fill="#1E90FF" r="12"></circle>
+<path d="M7 13L10 16L17 9" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
 </svg>
-    </div>
-
-    <div class="sar-gap-1"></div>
-
-    <!-- Congratulations text -->
-    <div class="sar-sub" style="text-align:center;font-size:24px;font-weight:700;">Congratulations</div>
-
-    
-    <!-- Download hint text (same style as intro paragraphs) -->
-    <div class="sar-intro" style="text-align:center;margin-top:6px;margin-bottom:8px">
-      To download your complete <br>test results please click PDF
+</div>
+<div class="sar-gap-1"></div>
+<!-- Congratulations text -->
+<div class="sar-sub" style="text-align:center;font-size:24px;font-weight:700;">Congratulations</div>
+<!-- Download hint text (same style as intro paragraphs) -->
+<div class="sar-intro" style="text-align:center;margin-top:6px;margin-bottom:8px">
+      To download your complete <br/>test results please click PDF
     </div>
 <!-- Three blank lines -->
-    <div class="sar-gap-1"></div>
-    <div class="sar-gap-1"></div>
-    <div class="sar-gap-1"></div>
-
-    <div class="sar-actions">
-      <button class="sar-btn" data-nav="goto" data-step="peer">Back</button>
-      <button class="sar-btn" id="finishPDF">PDF</button>
-    </div>
-  </div></div>
-  </div>
+<div class="sar-gap-1"></div>
+<div class="sar-gap-1"></div>
+<div class="sar-gap-1"></div>
+<div class="sar-actions">
+<button class="sar-btn" data-nav="goto" data-step="peer">Back</button>
+<button class="sar-btn" id="finishPDF">PDF</button>
 </div>
+</div></div>
 
-    </section>
-  </main>
 
-  <script>
+</section>
+</main>
+<script>
     const SAR_STEPS = ["welcome","q1","q2","score","peer","done","finish"];
 
     const sarState = {
@@ -471,7 +437,7 @@ p{color:#434343;line-height:1.6;}
 
     async function loadQuestions(){
       if (sarState.questions.length) return sarState.questions;
-      const res = await fetch('./questions.json?v=1', {cache: 'no-store'});
+      const res = await fetch('./questions_weighted.json?v=2', {cache: 'no-store'});
       const data = await res.json();
       sarState.questions = Array.isArray(data) ? data : [];
       return sarState.questions;
@@ -581,14 +547,24 @@ function scoreBand(pct){
   if (pct >= 40) return "Use self-development.<br>Practise makes you better";
   return "You’re behind.<br>Ask your team for guidance";
 }
+
+function weightedTotals(){
+  const qs = sarState.questions || [];
+  let weightedScore = 0;
+  let weightedMax = 0;
+  for(const q of qs){
+    const w = (typeof q.weight === 'number' && isFinite(q.weight)) ? q.weight : 1.0;
+    const v = (sarState.answers[q.id] || 0);
+    weightedScore += v * w;
+    weightedMax   += 5 * w;
+  }
+  return { weightedScore, weightedMax, pct: weightedMax ? Math.round((weightedScore/weightedMax)*100) : 0 };
+}
+
 function renderScore(){
   const page = document.querySelector('.sar-page[data-step="score"]');
   if(!page) return;
-  const qs = sarState.questions || [];
-  const total = qs.length * 5;
-  let sum = 0;
-  qs.forEach(q => { sum += (sarState.answers[q.id] || 0); });
-  const pct = total ? Math.round((sum / total) * 100) : 0;
+  const { pct } = weightedTotals();
   const rawEl = page.querySelector('#scoreNumber');
   const bandEl = page.querySelector('#scoreBandText');
   if(rawEl) rawEl.textContent = "YOUR SCORE IS " + pct + "%";
@@ -598,6 +574,131 @@ function renderScore(){
     const clamped = Math.max(0, Math.min(100, pct));
     marker.style.left = `calc(${clamped}% - 4px)`;
   }
+}
+
+// ---- PDF: build standalone HTML and print (robust, popup-safe) ----
+(function(){
+  function hasReportData(){
+    return Array.isArray(sarState?.questions) && sarState.questions.length > 0;
+  }
+  function buildReportHTML(){
+    const S = window.sarState || {};
+    const user = S.user || {}; const peer = S.peer || {};
+    const qs   = Array.isArray(S.questions) ? S.questions : [];
+    const A    = S.answers || {};
+    const tot  = weightedTotals();
+    const ts   = new Date().toLocaleString();
+    const rows = qs.map((q,i)=>{
+      const ans = (A[q.id] ?? "-");
+      const st  = (q.statement ?? `Statement ${i+1}`);
+      const sub = (q.subtext ?? "");
+      const w   = (typeof q.weight === 'number' && isFinite(q.weight)) ? q.weight : 1.0;
+      const badge = w >= 2 ? "⚡" : (w >= 1.5 ? "★" : (w <= 0.5 ? "•" : ""));
+      return `
+        <tr>
+          <td style="border:1px solid #ddd;padding:8px;">
+            <div><strong>${i+1}. ${st}</strong> ${badge ? `<span aria-label="weight">${badge}</span>` : ""}</div>
+            ${sub ? `<div style="font-size:12px;color:#555;margin-top:4px;">${sub}</div>` : ""}
+          </td>
+          <td style="border:1px solid #ddd;padding:8px;text-align:center;">${ans}</td>
+          <td style="border:1px solid #ddd;padding:8px;text-align:center;">${w}</td>
+        </tr>
+      `;
+    }).join("");
+
+    return `<!doctype html>
+<html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BED Self-Assessment Report</title>
+<style>
+@page { size: A4; margin: 12mm; }
+body { font-family: Arial, Helvetica, sans-serif; line-height:1.45; margin:12mm; color:#111; }
+h1{ font-size:20px; margin:0 0 6px; }
+h2{ font-size:16px; margin:14px 0 8px; }
+.small{ font-size:12px; color:#555; }
+table{ width:100%; border-collapse:collapse; margin-top:10px; }
+th,td{ border:1px solid #ddd; padding:8px; vertical-align:top; }
+th{ background:#f6f7f9; text-align:left; }
+tr,td,th{ page-break-inside:avoid; }
+.note{ font-size:12px; color:#555; margin-top:8px; }
+.actions{ margin-top:14px; }
+</style>
+</head>
+<body>
+  <h1>BED Self-Assessment — Completed Report</h1>
+  <div class="small"><strong>Generated:</strong> ${ts}</div>
+
+  <h2>Participant</h2>
+  <div class="small"><strong>User:</strong> ${user.nickname ?? "-"} (${user.email ?? "-"}) — ${user.hotel ?? "-"}</div>
+  <div class="small"><strong>Peer:</strong> ${peer.name ?? "-"} (${peer.email ?? "-"}) — ${peer.hotel ?? "-"}</div>
+
+  <h2>Score</h2>
+  <div><strong>${tot.weightedScore.toFixed(1)}</strong> / ${tot.weightedMax.toFixed(1)}  (${tot.pct}%)</div>
+  <div class="note">Weighted scoring is applied. ⚡ = high weight, ★ = medium, • = low.</div>
+
+  <h2>Statements & Answers</h2>
+  <table>
+    <thead><tr><th>Statement</th><th style="width:96px;">Answer</th><th style="width:84px;">Weight</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="actions">
+    <button onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</body></html>`;
+  }
+
+  function handlePDF(){
+    if(!hasReportData()){
+      alert("Your report is not ready yet. Please complete the assessment first.");
+      return;
+    }
+    const html = buildReportHTML();
+
+    // Try Path 1: new window/tab
+    let w=null; try{ w = window.open("","_blank"); }catch(e){ w=null; }
+    if(w && w.document){
+      w.document.open(); w.document.write(html); w.document.close();
+      w.focus();
+      w.onload = ()=>{ try{ w.print(); }catch(_){ } };
+      return;
+    }
+
+    // Path 2: hidden iframe
+    const iframe = document.createElement("iframe");
+    Object.assign(iframe.style, { position:"fixed", right:0, bottom:0, width:0, height:0, border:0 });
+    document.body.appendChild(iframe);
+    const idoc = (iframe.contentWindow || iframe).document;
+    idoc.open(); idoc.write(html); idoc.close();
+    iframe.onload = ()=>{
+      try{ (iframe.contentWindow || iframe).focus(); (iframe.contentWindow || iframe).print(); }
+      catch(_){ replaceAndPrint(html); }
+      setTimeout(()=>iframe.remove(), 600);
+    };
+
+    function replaceAndPrint(content){
+      const original = document.documentElement.innerHTML;
+      document.open(); document.write(content); document.close();
+      setTimeout(()=>{
+        try{ window.print(); } finally {
+          setTimeout(()=>{ document.open(); document.write(original); document.close(); location.reload(); }, 300);
+        }
+      }, 60);
+    }
+  }
+
+  function bindPDF(){
+    const btn = document.getElementById("finishPDF");
+    if(btn && !btn._pdfBound){
+      btn.addEventListener("click", handlePDF);
+      btn._pdfBound = true;
+    }
+  }
+  if(document.readyState === "loading"){
+    window.addEventListener("DOMContentLoaded", bindPDF, { once:true });
+  } else { bindPDF(); }
+  const mo = new MutationObserver(bindPDF);
+  mo.observe(document.documentElement, { childList:true, subtree:true });
+})();
 }
 let peerBound = false;
 function ensurePeerBindings(){
@@ -776,7 +877,6 @@ function downloadSarResults(){
 }
 
 </script>
-
 <!-- Custom 24-month confirmation (no browser header) -->
 <style>
   .exp24__mask{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:2147483646;}
@@ -788,14 +888,14 @@ function downloadSarResults(){
   .exp24__btn--ghost{background:#f2f4f7}
   .exp24__btn--primary{background:#1E90FF;color:#fff}
 </style>
-<div id="exp24Mask" class="exp24__mask"></div>
-<div id="exp24Modal" class="exp24__modal" role="dialog" aria-modal="true" aria-labelledby="exp24Title">
-  <div class="exp24__hd" id="exp24Title">Peer eligibility</div>
-  <div class="exp24__bd">Does your peer have at least 24 months of BED experience?</div>
-  <div class="exp24__ft">
-    <button id="exp24Cancel" class="exp24__btn exp24__btn--ghost" type="button">Cancel</button>
-    <button id="exp24OK" class="exp24__btn exp24__btn--primary" type="button">OK</button>
-  </div>
+<div class="exp24__mask" id="exp24Mask"></div>
+<div aria-labelledby="exp24Title" aria-modal="true" class="exp24__modal" id="exp24Modal" role="dialog">
+<div class="exp24__hd" id="exp24Title">Peer eligibility</div>
+<div class="exp24__bd">Does your peer have at least 24 months of BED experience?</div>
+<div class="exp24__ft">
+<button class="exp24__btn exp24__btn--ghost" id="exp24Cancel" type="button">Cancel</button>
+<button class="exp24__btn exp24__btn--primary" id="exp24OK" type="button">OK</button>
+</div>
 </div>
 <script>
 (function(){
@@ -886,8 +986,6 @@ ok.onclick = function(){
   document.addEventListener('click', function(){ setTimeout(bind,0); }, {passive:true});
 })();
 </script>
-
-
 <!-- Peer consent validation -->
 <script>
 (function(){
@@ -913,11 +1011,6 @@ ok.onclick = function(){
   validatePeerConsent();
 })();
 </script>
-
-
-
-
-
 <!-- Peer Consent Checkbox (isolated, positioned under hotels) -->
 <script>
 (function(){
@@ -971,8 +1064,6 @@ ok.onclick = function(){
   window.addEventListener('hashchange', function(){ setTimeout(injectPeerConsent, 0); }, {passive:true});
 })();
 </script>
-
-
 <!-- Peer Consent Adjustments: rename Send->Done, require consent, and chain to Next -->
 <script>
 (function(){
@@ -1041,8 +1132,6 @@ ok.onclick = function(){
   window.addEventListener('hashchange', function(){ setTimeout(run,0); }, {passive:true});
 })();
 </script>
-
-
 <!-- Peer page tidy-up: place consent under hotels, rename Send->Done, enable when valid -->
 <script>
 (function(){
@@ -1146,6 +1235,5 @@ ok.onclick = function(){
 })();
 
 </script>
-
 </body>
 </html>

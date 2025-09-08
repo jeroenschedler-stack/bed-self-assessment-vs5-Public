@@ -20,7 +20,6 @@
   };
 })();
 </script>
-
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>BED Hospitality — Self-Assessment (SAR)</title>
@@ -1251,6 +1250,38 @@ ok.onclick = function(){
   window.addEventListener('pageshow', bindWelcomeFallback, {once:true});
 })();
 
+</script>
+
+<style>
+#DEBUG_BOX{position:fixed;left:12px;bottom:12px;max-width:90vw;z-index:99999;
+background:#ffeeee;border:1px solid #cc0000;padding:10px 12px;border-radius:8px;
+font:12px/1.4 Arial, sans-serif;color:#a00000;display:none;white-space:pre-wrap;}
+#DEBUG_BOX b{color:#cc0000}
+</style>
+<div id="DEBUG_BOX"><b>ERROR:</b> <span id="DEBUG_MSG"></span></div>
+<script>
+(function(){
+  const box = document.createElement('div');
+  box.id='__dbg_mount__'; document.body.appendChild(box);
+  function show(msg){
+    var b = document.getElementById('DEBUG_BOX');
+    var m = document.getElementById('DEBUG_MSG');
+    if(!b||!m){return;}
+    m.textContent = (msg && (''+msg)).slice(0,800);
+    b.style.display='block';
+  }
+  const origErr = console.error.bind(console);
+  console.error = function(){ try{ show(arguments[0]); }catch(e){} origErr.apply(console, arguments); };
+  window.addEventListener('error', function(e){ try{ show(e.message || e.error); }catch(_){} });
+  window.addEventListener('unhandledrejection', function(e){ try{ show(e.reason && e.reason.message ? e.reason.message : e.reason); }catch(_){} });
+  // Sanity check: if app root stays empty after 1.5s, notify
+  setTimeout(function(){
+    var root = document.querySelector('.sar-app,.sar-page'); 
+    if(!root || root.offsetHeight < 50){
+      show('App did not render. Possible causes: missing questions load, JS error, or blocked scripts.');
+    }
+  }, 1500);
+})();
 </script>
 </body>
 </html>

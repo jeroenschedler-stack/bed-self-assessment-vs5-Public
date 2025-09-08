@@ -437,7 +437,7 @@ p{color:#434343;line-height:1.6;}
 
     async function loadQuestions(){
       if (sarState.questions.length) return sarState.questions;
-      const res = await fetch('./questions_weighted.json?v=2', {cache: 'no-store'});
+      const res = await fetch('./questions.json?v=2', {cache: 'no-store'});
       const data = await res.json();
       sarState.questions = Array.isArray(data) ? data : [];
       return sarState.questions;
